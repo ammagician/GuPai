@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="struts-gp" extends="struts-default">
+		<interceptors>
+			<interceptor name="exception" class="com.lanfeng.gupai.interceptor.ExceptionInterceptor" />
+			<interceptor-stack name="exceptionStack">
+				<interceptor-ref name="exception" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="exceptionStack" />
+	</package>
+	<!-- Dynamic Method Invocation -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<!-- Development model-->
+	<constant name="struts.devMode" value="false" />
+	<!-- action suffix-->
+	<constant name="struts.action.extension" value="do" />
+	<!-- Replace the object creation factory  -->
+	<constant name="struts.objectFactory" value="spring" />
+	<!-- action name "/" -->
+	<constant name="struts.enable.SlashesInActionNames" value="true"></constant>
+
+	<constant name="struts.custom.i18n.resources" value="res"></constant>
+	<include file="struts-gupai.xml" />
+</struts>

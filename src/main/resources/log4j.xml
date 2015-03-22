@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="consol" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="#%d, %X{ip} %X{userName} %c{2} - %m%n" />
+		</layout>
+	</appender>
+	<appender name="dailyFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${catalina.base}/logs/pa.log" />
+		<param name="Append" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="#%d, %X{ip} %X{userName} %c{2} - %m%n" />
+		</layout>
+	</appender>
+<!-- 	<appender name="testDailyFile" class="org.apache.log4j.DailyRollingFileAppender"> -->
+<!-- 		<param name="File" value="target/test-classes/test.log" /> -->
+<!-- 		<param name="Append" value="true" /> -->
+<!-- 		<layout class="org.apache.log4j.PatternLayout"> -->
+<!-- 			<param name="ConversionPattern" value="#%d, %c{2} - %m%n" /> -->
+<!-- 		</layout> -->
+<!-- 	</appender> -->
+
+	<logger name="mailAlert">
+		<level value="error" />
+		<appender-ref ref="consol" />
+		<appender-ref ref="dailyFile" />
+	</logger>
+	<logger name="recordLog">
+		<level value="error" />
+		<appender-ref ref="consol" />
+		<appender-ref ref="dailyFile" />
+	</logger>
+	<logger name="com.morningstar.oneteam.portfolioanalysis">
+		<level value="info" />
+		<appender-ref ref="consol" />
+		<appender-ref ref="dailyFile" />
+	</logger>	
+	<root>
+		<level value="info" />
+		
+	</root>
+
+</log4j:configuration>
