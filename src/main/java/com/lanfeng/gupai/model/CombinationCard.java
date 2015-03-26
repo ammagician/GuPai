@@ -12,9 +12,9 @@ import com.lanfeng.gupai.dictionary.CardType;
  * @author apang
  *
  */
-public class CombinationCard {
+public class CombinationCard implements ICard {
 	protected List<Card> cards = new ArrayList<Card>();
-	protected CardType type; // wen or wu
+	protected CardType type = CardType.COM; // wen or wu
 	protected int value; // da xiao
 
 	public CombinationCard(List<Card> cards, CardType type, int value) {

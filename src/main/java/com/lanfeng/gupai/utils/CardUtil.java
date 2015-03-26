@@ -6,6 +6,7 @@ package com.lanfeng.gupai.utils;
 import java.util.List;
 
 import com.lanfeng.gupai.model.Card;
+import com.lanfeng.gupai.model.ICard;
 import com.lanfeng.gupai.model.PairCard;
 import com.lanfeng.gupai.model.QuadrupleCard;
 import com.lanfeng.gupai.model.TripleCard;
@@ -14,9 +15,9 @@ import com.lanfeng.gupai.model.TripleCard;
  * @author apang
  *
  */
-public class CardUtils {
+public class CardUtil {
 
-	public static int getValue(Object cardObj) {
+	public static int getValue(ICard cardObj) {
 		int value = -1;
 		if (cardObj instanceof Card) {
 			value = ((Card) cardObj).getValue();

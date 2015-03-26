@@ -9,7 +9,7 @@ import com.lanfeng.gupai.dictionary.CardType;
  * @author apang
  *
  */
-public class Card {
+public class Card implements ICard {
 	private String id;
 	private String name;
 	private CardType type; // wen or wu
