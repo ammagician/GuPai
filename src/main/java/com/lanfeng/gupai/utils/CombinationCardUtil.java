@@ -129,22 +129,22 @@ public class CombinationCardUtil {
 		we.add("WEND");
 		we.add("WENDD");
 		we.add("WUD");
-		tripleCards.put("wenwe1", we);
+		tripleCards.put("wenew1", we);
 		we = new HashSet<String>();
 		we.add("WEND");
 		we.add("WENDD");
 		we.add("WUDD");
-		tripleCards.put("wenwe2", we);
+		tripleCards.put("wenew2", we);
 		we = new HashSet<String>();
 		we.add("WEND");
 		we.add("WUD");
 		we.add("WUDD");
-		tripleCards.put("wuwe1", we);
+		tripleCards.put("wuew1", we);
 		we = new HashSet<String>();
 		we.add("WENDD");
 		we.add("WUD");
 		we.add("WUDD");
-		tripleCards.put("wuwe2", we);
+		tripleCards.put("wuew2", we);
 	}
 
 	private static void initPairCards() {
