@@ -1,9 +1,13 @@
 package com.lanfeng.gupai.action;
 
-public class AreaAction {
+import com.lanfeng.gupai.utils.common.JSONObject;
 
-	public AreaAction() {
-		// TODO Auto-generated constructor stub
+public class AreaAction extends BaseAction{
+
+	public String getAreaList(){
+		
+		
+		return "";
 	}
 
 }
