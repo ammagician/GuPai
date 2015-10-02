@@ -9,5 +9,8 @@
 			<result name="success" type="redirect">/index.jsp</result>
 		</action-->
 		<action name="Login*" method="do{1}" class="LoginAction" />
+		<action name="Hall*" method="do{1}" class="HallAction" />
+		<action name="Room*" method="do{1}" class="RoomAction" />
+		<action name="Desk*" method="do{1}" class="DeskAction" />
 	</package>
 </struts>

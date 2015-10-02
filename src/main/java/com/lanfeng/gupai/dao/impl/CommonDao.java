@@ -9,14 +9,16 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 
 import com.lanfeng.gupai.dao.ICommonDao;
 import com.lanfeng.gupai.model.Page;
+import com.lanfeng.gupai.utils.HibernateUtil;
 
 public class CommonDao<T, PK extends Serializable> implements ICommonDao<T, PK> {
 	private Session getSession(){
-		SessionFactory sf = new Configuration().configure().buildSessionFactory(null);
-		Session s = sf.openSession();
+		Session s = HibernateUtil.getSession();
 		return s;
 	}
 
@@ -24,6 +26,13 @@ public class CommonDao<T, PK extends Serializable> implements ICommonDao<T, PK> 
 		Session s = getSession();
 		s.byId(t.getClass()).load(pk);
 		return null;
+	}
+	
+	public List<T> getALLByHql(String hql) {
+		Session s = getSession();
+		Query q = s.createQuery(hql);
+		List<T> list = (List<T>)q.list();
+		return list;
 	}
 	
 	public List<T> getALL(String tableName) {
@@ -81,6 +90,23 @@ public class CommonDao<T, PK extends Serializable> implements ICommonDao<T, PK> 
 		tx.commit();
 		s.close();
 		return t;
+	}
+	
+	public void batchAdd(List<T> ts) {
+		Session s = getSession();
+		Transaction tx = s.beginTransaction();
+		int i = 0;
+		for ( T t : ts ) {
+		    s.save(t);
+		    if ( i % 20 == 0 ) { //20, same as the JDBC batch size
+		        //flush a batch of inserts and release memory:
+		        s.flush();
+		        s.clear();
+		    }
+		    i++;
+		}
+		tx.commit();
+		s.close();
 	}
 
 	public boolean batchDelete(List<T> ts) {

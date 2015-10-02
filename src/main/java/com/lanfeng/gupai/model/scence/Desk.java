@@ -6,22 +6,46 @@ package com.lanfeng.gupai.model.scence;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import com.lanfeng.gupai.dictionary.Position;
 
 /**
  * @author lanfeng
  *
  */
-public class Table {
 
+@Entity
+@Table(name="Desk")
+public class Desk {
+	@Transient
 	private List<Seat> seats = new ArrayList<Seat>(4);
+	
+	@Column(name = "roomId")
+	private String roomId;
+	
+	@Id
+	@GenericGenerator(name="uuid",strategy="uuid")
+	@GeneratedValue(generator="uuid")
+	@Column(name = "id", nullable = false)
 	private String id;
+	
+	@Column(name = "name")
 	private String name;
+	
+	@Column(name = "available")
 	private boolean available = true;
 	/**
 	 * 
 	 */
-	public Table() {
+	public Desk() {
 		this.init();
 	}
 	
@@ -60,14 +84,29 @@ public class Table {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	
+
+	public List<Seat> getSeats() {
+		return seats;
+	}
+
+	public void setSeats(List<Seat> seats) {
+		this.seats = seats;
+	}
+
+	public String getRoomId() {
+		return roomId;
+	}
+
+	public void setRoomId(String roomId) {
+		this.roomId = roomId;
+	}
 
 	@Override
 	public String toString() {
-		return "Table [seats=" + seats + ", id=" + id + ", name=" + name
-				+ ", available=" + isAvailable() + "]";
+		return "Desk [seats=" + seats + ", roomId=" + roomId + ", id=" + id
+				+ ", name=" + name + ", available=" + isAvailable() + "]";
 	}
 
-	
-	
-	
 }

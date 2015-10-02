@@ -1,27 +1,65 @@
 package com.lanfeng.gupai.action;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.lanfeng.gupai.model.scence.Room;
+import com.lanfeng.gupai.service.IRoomService;
 import com.lanfeng.gupai.utils.common.JSONArray;
 import com.lanfeng.gupai.utils.common.JSONObject;
 import com.lanfeng.gupai.utils.common.StringUtil;
 
 public class RoomAction extends BaseAction{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -458831708075468652L;
+	
+	private IRoomService roomService;
 
-	public String getRoomList() throws IOException {
-		JSONObject rd = JSONObject.fromObject(data);
-		String hallId = rd.getString("hallId");
-		JSONArray rooms = new JSONArray();
-		if(StringUtil.isValid(hallId)){
-			rooms = null;
+	public String doGetRoomList() throws IOException {
+		HttpServletRequest req = getRequest();
+		String hallId = req.getParameter("hallId");
+		if(!StringUtil.isValid(hallId)){
+			JSONObject rd = JSONObject.fromObject(data);
+			hallId = rd.getString("hallId");
 		}
-		writer(rooms);
-		return "";
+		List<Room> rs = new ArrayList<Room>();
+		if(StringUtil.isValid(hallId)){
+			rs = roomService.getRoomsByHallId(hallId);
+		}else{
+			rs = roomService.getALLRooms();
+		}
+		writer(rs);
+		return NONE;
+	}
+	
+	public String doAddRooms(){
+		HttpServletRequest req = getRequest();
+		String hallId = req.getParameter("hallId");
+		if(!StringUtil.isValid(hallId)){
+			JSONObject rd = JSONObject.fromObject(data);
+			hallId = rd.getString("hallId");
+		}
+		List<Room> rs = new ArrayList<Room>();
+		for(int i=0,len=100;i<len;i++){
+			Room room = new Room();
+			room.setHallId(hallId);
+			room.setName("room_" + (i + 1));
+			rs.add(room);
+		}
+		roomService.addRooms(rs);
+		return NONE;
+	}
+
+	public IRoomService getRoomService() {
+		return roomService;
+	}
+
+	public void setRoomService(IRoomService roomService) {
+		this.roomService = roomService;
 	}
 
 }

@@ -67,7 +67,7 @@ public class JSONObject implements Serializable {
 	}
 
 	public static JSONObject fromObject(String data) {
-		Map<Object, Object> map = null;
+		Map<Object, Object> map = new HashMap<Object, Object>();
 		try {
 			map = mapper.readValue(data, Map.class);
 		} catch (Exception e) {

@@ -12,6 +12,7 @@
 		<spring.version>4.0.5.RELEASE</spring.version>
 		<struts.version>2.3.16.2</struts.version>
 		<hibernate.version>4.2.20.Final</hibernate.version>
+		<mysql.version>5.1.30</mysql.version>
 		<maven.compiler.version>2.3.2</maven.compiler.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<sonar.language>java</sonar.language>
@@ -86,7 +87,19 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.2.20.Final</version>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		
+		<!-- mysql -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.version}</version>
 		</dependency>
 		
 		<!-- apache commons -->

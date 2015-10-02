@@ -16,12 +16,24 @@
 	</context:component-scan>
 
 	<!-- service configuration -->
-	<!--bean id="PortfolioService" class="com.morningstar.oneteam.portfolioanalysis.service.impl.PortfolioServiceImpl">
-		<property name="dashboardService" ref="DashboardService"></property>
-	</bean-->
+	<bean id="HallDao" class="com.lanfeng.gupai.dao.impl.HallDao"></bean>
+	<bean id="HallService" class="com.lanfeng.gupai.service.impl.HallService">
+		<property name="hallDao" ref="HallDao"></property>
+	</bean>	
+	<bean id="RoomDao" class="com.lanfeng.gupai.dao.impl.RoomDao"></bean>
+	<bean id="RoomService" class="com.lanfeng.gupai.service.impl.RoomService">
+		<property name="roomDao" ref="RoomDao"></property>
+	</bean>
+	<bean id="DeskDao" class="com.lanfeng.gupai.dao.impl.DeskDao"></bean>
+	<bean id="DeskService" class="com.lanfeng.gupai.service.impl.DeskService">
+		<property name="deskDao" ref="DeskDao"></property>
+	</bean>
 
 
 	<!-- action configuration -->
 	<bean id="LoginAction" class="com.lanfeng.gupai.action.LoginAction" scope="prototype" />
+	<bean id="HallAction" class="com.lanfeng.gupai.action.HallAction" scope="prototype" />
+	<bean id="RoomAction" class="com.lanfeng.gupai.action.RoomAction" scope="prototype" />
+	<bean id="DeskAction" class="com.lanfeng.gupai.action.DeskAction" scope="prototype" />
 
 </beans>
