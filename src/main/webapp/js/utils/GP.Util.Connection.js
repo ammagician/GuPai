@@ -1,5 +1,4 @@
-if (!GP) var GP = {};
-if (!GP.Util) GP.Util = {};
+ns("GP.Util");
 GP.Util.Connection = function () {
 	this.prop = {
 		dataType : 'json',

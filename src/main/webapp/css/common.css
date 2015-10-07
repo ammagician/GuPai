@@ -1,0 +1,4 @@
+.toolBar{background-color: #707070; border-bottom: solid 1px #a9a9a9; z-index: 10;}
+.hallContent, .roomContent{background-color: #34383d;}
+.roomIcon, .deskIcon{border-radius: 10px; border:solid 1px #a9a9a9;}
+.roomIcon:hover, .deskIcon:hover{border-color:#bead67;}

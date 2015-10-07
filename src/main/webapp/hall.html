@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>骨牌游戏大厅</title>
+    <link rel="stylesheet" href="css/base.css" type="text/css">
+    <link rel="stylesheet" href="css/common.css" type="text/css">
+    <script type="text/javascript" src="js/lib/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.json.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.mousewheel.js"></script>
+    <script type="text/javascript" src="js/Global.js"></script>
+    <script type="text/javascript" src="js/utils/GP.Util.ArrayList.js"></script>
+    <script type="text/javascript" src="js/utils/GP.Util.Debug.js"></script>
+    <script type="text/javascript" src="js/utils/GP.Util.Connection.js"></script>
+    <script type="text/javascript" src="js/GP.Hall.js"></script>
+    <script type="text/javascript" src="js/GP.Room.js"></script>
+    <style type="text/css">
+        body{background-color: #34383d;}
+    </style>
+</head>
+<body>
+    <div class="w h50 pf toolBar">
+        <div class="fl ml20 h30 mt10 w300">
+            <div class="pointer navHall pointer fl">游戏大厅</div>
+            <div class="none navRoom pointer fl ml20">房间001</div>
+            <div class="none fl ml20">桌子001</div>
+        </div>
+        <div class="pointer fr mr20 h30 mt10 w50">退出</div>
+    </div>
+    <div class="pr hallContent" style="top:50px;"></div>
+    <div class="pr none roomContent" style="top:50px;"></div>
+    <div class="pr none deskContent" style="top:50px;"></div>
+
+    <script>
+        $(document).ready(function(){
+            var hall = new GP.Hall();
+
+            hall.el.css("padding-left", calPadding() + "px");
+
+            $(window).bind("resize", hall.resize);
+
+            hall.getRoomList("402881ed5027289c01502728e6200000");
+
+            $(".toolBar .navHall").bind("click", function(e){
+                var id = $(this).attr("hallId");
+                if(hall.el.hasClass("none")){
+                    hall.toolBar.find(".navRoom").addClass("none");
+                    hall.el.removeClass("none");
+                    hall.getRoomList(id);
+                    $(".roomContent").addClass("none");
+                }
+            })
+
+        });
+    </script>
+</body>
+</html>

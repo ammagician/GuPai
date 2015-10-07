@@ -22,7 +22,7 @@ public class DeskAction extends BaseAction{
 	private IDeskService deskService;
 	private IRoomService roomService;
 
-	public String doGetRoomList() throws IOException {
+	public String doGetDeskList() throws IOException {
 		HttpServletRequest req = getRequest();
 		String roomId = req.getParameter("roomId");
 		if(!StringUtil.isValid(roomId)){
