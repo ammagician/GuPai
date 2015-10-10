@@ -3,13 +3,18 @@
  */
 package com.lanfeng.gupai.model.scence;
 
+import com.lanfeng.gupai.cacheCenter.Cachable;
 import com.lanfeng.gupai.dictionary.Position;
 
 /**
  * @author lanfeng
  *
  */
-public class Seat {
+public class Seat extends Cachable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2059291397390603644L;
 	private Position position;
 	private boolean available = true;
 	private String userId;

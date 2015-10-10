@@ -3,6 +3,7 @@
  */
 package com.lanfeng.gupai.model.scence;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.lanfeng.gupai.cacheCenter.Cachable;
 import com.lanfeng.gupai.dictionary.Position;
 
 /**
@@ -24,7 +26,12 @@ import com.lanfeng.gupai.dictionary.Position;
 
 @Entity
 @Table(name="Desk")
-public class Desk {
+public class Desk extends Cachable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8296221481328559335L;
+
 	@Transient
 	private List<Seat> seats = new ArrayList<Seat>(4);
 	

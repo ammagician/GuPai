@@ -2,6 +2,7 @@ package com.lanfeng.gupai.service.impl;
 
 import java.util.List;
 
+import com.lanfeng.gupai.cacheCenter.CacheCenter;
 import com.lanfeng.gupai.dao.IDeskDao;
 import com.lanfeng.gupai.model.scence.Desk;
 import com.lanfeng.gupai.service.IDeskService;
@@ -11,7 +12,13 @@ public class DeskService implements IDeskService {
 	
 	public List<Desk> getDesksByRoomId(String roomId) {
 		// TODO Auto-generated method stub
-		return deskDao.getDesksByRoomId(roomId);
+		List<Desk> desks = CacheCenter.getDesks(roomId);
+		if(desks.isEmpty()){
+			desks = deskDao.getDesksByRoomId(roomId);
+			CacheCenter.setDesks(roomId, desks);
+		}
+		
+		return desks;
 	}
 
 	public List<Desk> getALLDesks() {

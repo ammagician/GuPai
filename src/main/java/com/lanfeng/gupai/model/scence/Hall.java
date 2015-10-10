@@ -14,7 +14,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -31,8 +33,7 @@ public class Hall implements Serializable{
 	 */
 	private static final long serialVersionUID = 2453750394980846726L;
 
-	@OneToMany
-	@JoinColumn(name="hallId")
+	@Transient
 	private List<Room> rooms = new ArrayList<Room>(100);
 	
 	@Id
