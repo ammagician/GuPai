@@ -292,8 +292,7 @@
 		</plugins>
 	</build>
 
-	<profiles>
-		<!--  
+	<profiles> 
 		<profile>
 			<id>normal</id>
 			<activation>
@@ -333,6 +332,5 @@
 				</plugins>
 			</build>
 		</profile>
-		-->
 	</profiles>
 </project>
