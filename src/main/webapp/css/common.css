@@ -10,6 +10,7 @@
 .seat-e{right: 0px; top: 33px;}
 .seat-s{bottom: 0px; left: 33px;}
 .seat-w{top: 33px; left: 0px;}
+.seat-on{background: url("../images/bg.png") 0px 0px repeat-x;}
 
 .playground{color:#ccc;}
 .playground-content{background: url("../images/bg.png") 0px 0px repeat-x;}

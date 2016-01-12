@@ -15,3 +15,22 @@ var ns = function(str){
         parent = parent[a];
     }
 };
+
+var loadScript = function(scripts, callback){
+    var loadedCount = 0;
+    var count = scripts.length;
+
+    for(var i= 0,len=scripts.length; i<len; i++){
+        var script = document.createElement('script');
+        script.setAttribute('type', 'text/javascript');
+        script.setAttribute('src', scripts[i]);
+        var head = document.getElementsByTagName('head')[0];
+        head.appendChild(script);
+        script.onload = function(){
+            ++loadedCount;
+            if(loadedCount >= count && callback){
+                callback();
+            }
+        }
+    }
+};

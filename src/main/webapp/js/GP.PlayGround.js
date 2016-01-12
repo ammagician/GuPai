@@ -22,7 +22,7 @@ GP.PlayGround.prototype = {
         this.sendInitPlayGround();
     },
     _initLayout: function(){
-        this.el = $(".playground").show();
+        this.el = $(".playground").show().empty();
         var h = this.el.height() - 30;
         var html = "<div>" +
                 "<div class='playground-toolbar fullWidth h30'>" +
@@ -57,7 +57,7 @@ GP.PlayGround.prototype = {
     sendMessage: function(msg){
         var ws = getWebSocket();
         if(ws){
-            ws.send($.toJSON(msg));
+            ws.webSocket.send($.toJSON(msg));
         }
     },
 

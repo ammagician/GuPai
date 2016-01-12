@@ -25,6 +25,11 @@ GP.Hall.prototype = {
         conn.add("url", "RoomGetRoomList.do").add({async:true, type: "GET", data:{data:$.toJSON(msg)}});
         conn.addListener("onSuccess", {onSuccess : function (conn, res) {
             var halls = res.data;
+            halls.sort(function(a, b){
+                var ai = parseInt(a.name.substring(5, a.name.length));
+                var bi = parseInt(b.name.substring(5, b.name.length));
+                return ai - bi;
+            });
             ctr.createRooms(halls);
         }});
         conn.connect();
@@ -41,7 +46,7 @@ GP.Hall.prototype = {
             var str = "<div class='pointer tc roomItem fl w100 h160 m15' roomId='" + id + "'>" +
                 "<div class='roomIcon w100 h100'></div>" +
                 "<div class='roomName w100 h30 lh150'>" + name + "</div>" +
-                "<div class='roomMember w100 h30 lh150'>" + (available? "未满员": "满员") + "</div>" +
+                //"<div class='roomMember w100 h30 lh150'>" + (available? "未满员": "满员") + "</div>" +
                 "</div>";
             html += str;
         }

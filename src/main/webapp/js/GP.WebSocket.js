@@ -2,13 +2,12 @@
  * Created by pym on 2016/1/12.
  */
 ns("GP");
-
 GP.WebSocket = function(){
     this.init();
     this.messageCallbacks = {};
 };
 
-GP.PlayGround.prototype = {
+GP.WebSocket.prototype = {
     init: function(){
         var webSocket = new WebSocket(constant.webSocket);
         var ws = this;
@@ -38,7 +37,7 @@ GP.PlayGround.prototype = {
             var item = cs[i],
                 fn = item.fn,
                 scope = item.scope;
-            fn.apply(scope, data);
+            fn.apply(scope, [data]);
         }
     },
 

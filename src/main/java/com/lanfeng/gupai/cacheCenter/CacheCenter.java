@@ -18,6 +18,12 @@ public class CacheCenter{
 		server = RedisServer.getInstance();
 	}
 	
+	public static void removeString(String key){
+		Jedis redis = server.getRedis();
+		redis.del(key);
+		server.returnRedis(redis);
+	}
+	
 	public static void setString(String key, String value){
 		Jedis redis = server.getRedis();
 		redis.set(key, value);
@@ -29,6 +35,12 @@ public class CacheCenter{
 		String val = redis.get(key);
 		server.returnRedis(redis);
 		return val;
+	}
+	
+	public static void removeObject(String key){
+		Jedis redis = server.getRedis();
+		redis.del(key.getBytes());
+		server.returnRedis(redis);
 	}
 	
 	public static <T extends Serializable> void setObject(String key, T obj){

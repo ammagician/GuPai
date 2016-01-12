@@ -2,7 +2,6 @@ package com.lanfeng.gupai.action;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +12,6 @@ import com.lanfeng.gupai.model.scence.Room;
 import com.lanfeng.gupai.service.IDeskService;
 import com.lanfeng.gupai.service.IRoomService;
 import com.lanfeng.gupai.utils.PositionMap;
-import com.lanfeng.gupai.utils.common.JSONArray;
 import com.lanfeng.gupai.utils.common.JSONObject;
 import com.lanfeng.gupai.utils.common.StringUtil;
 

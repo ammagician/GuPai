@@ -11,8 +11,10 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import com.lanfeng.gupai.cacheCenter.CacheCenter;
 import com.lanfeng.gupai.utils.CardsCreator;
 import com.lanfeng.gupai.utils.common.JSONObject;
+import com.lanfeng.gupai.utils.common.StringUtil;
 
 @ServerEndpoint("/gameServer")
 public class GameServer extends HttpServlet {
@@ -43,6 +45,13 @@ public class GameServer extends HttpServlet {
 				e.printStackTrace();
 			}
 		} else if("sitSeat".equals(eventType)){
+			JSONObject data = obj.getJSONObject("data");
+			if(data.getBoolean("empty")){
+				CacheCenter.removeString(session.getId());
+			}else{
+				CacheCenter.setString(session.getId(), data.toString());
+			}			
+			
 			for (Session client : clients) {
 				try {
 					result.put("data", obj.getJSONObject("data"));
@@ -67,6 +76,20 @@ public class GameServer extends HttpServlet {
 	public void onClose(Session session) {
 		System.out.println("close" + session.getId());
 		clients.remove(session);
+		
+		String d = CacheCenter.getString(session.getId());
+		if(StringUtil.isValid(d)){
+			JSONObject result = new JSONObject();
+			result.put("eventType", "sitSeat");
+			result.put("data", JSONObject.fromObject(d));
+			for (Session client : clients) {
+				try {
+					client.getBasicRemote().sendText(result.toString());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	@OnError

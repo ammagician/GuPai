@@ -40,6 +40,9 @@ public class DeskService implements IDeskService {
 	public boolean sitDesk(String roomId, String deskId, Position position) {
 		List<Desk> desks = this.getDesksByRoomId(roomId);
 		Desk d = getDesk(desks, deskId);
+		if(d == null){
+			return false;
+		}
 		Seat s = d.getSeat(position);
 		if(s.isAvailable()){
 			s.setAvailable(false);
