@@ -66,6 +66,15 @@ public class Desk extends Cachable{
 		seats.add(south);
 		seats.add(north);
 	}
+	
+	public Seat getSeat(Position p){
+		for(Seat s : seats){
+			if(s.getPosition().getCode() == p.getCode()){
+				return s;
+			}
+		}
+		return null;
+	}
 
 	public boolean isAvailable(){
 		for(Seat s : seats){

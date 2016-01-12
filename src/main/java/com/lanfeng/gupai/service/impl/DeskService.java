@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.lanfeng.gupai.cacheCenter.CacheCenter;
 import com.lanfeng.gupai.dao.IDeskDao;
+import com.lanfeng.gupai.dictionary.Position;
 import com.lanfeng.gupai.model.scence.Desk;
+import com.lanfeng.gupai.model.scence.Seat;
 import com.lanfeng.gupai.service.IDeskService;
 
 public class DeskService implements IDeskService {
@@ -20,7 +22,27 @@ public class DeskService implements IDeskService {
 		
 		return desks;
 	}
+	
+	public Desk getDesk(String roomId, String deskId) {
+		List<Desk> desks = this.getDesksByRoomId(roomId);
+		for(Desk d : desks){
+			if(d.getId().equals(deskId)){
+				return d;
+			}
+		}
+		return null;
+	}
 
+	public boolean sitDesk(String roomId, String deskId, Position position) {
+		Desk d = this.getDesk(roomId, deskId);
+		Seat s = d.getSeat(position);
+		if(s.isAvailable()){
+			s.setAvailable(false);
+			return true;
+		}
+		return false;
+	}
+	
 	public List<Desk> getALLDesks() {
 		return deskDao.getALLDesks();
 	}
@@ -40,5 +62,4 @@ public class DeskService implements IDeskService {
 	public void setDeskDao(IDeskDao deskDao) {
 		this.deskDao = deskDao;
 	}
-
 }

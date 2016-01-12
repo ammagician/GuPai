@@ -154,3 +154,7 @@ abbr,acronym { border:0}
 .bGreen{border:1px dashed #0F0}
 .bBlue{border:1px dashed #00F}
 .col_grey{ color:#707070}
+
+.fullSize{width:100%;height:100%;}
+.fullWidth{width:100%;}
+.fullHeight{height:100%;}

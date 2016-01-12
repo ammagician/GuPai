@@ -7,10 +7,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.lanfeng.gupai.dictionary.Position;
 import com.lanfeng.gupai.model.scence.Desk;
 import com.lanfeng.gupai.model.scence.Room;
 import com.lanfeng.gupai.service.IDeskService;
 import com.lanfeng.gupai.service.IRoomService;
+import com.lanfeng.gupai.utils.PositionMap;
 import com.lanfeng.gupai.utils.common.JSONArray;
 import com.lanfeng.gupai.utils.common.JSONObject;
 import com.lanfeng.gupai.utils.common.StringUtil;
@@ -63,6 +65,17 @@ public class DeskAction extends BaseAction{
 			String rId = r.getId();
 			addDesks(rId);
 		}
+		return NONE;
+	}
+	
+	public String doSitSeat() throws IOException {
+		JSONObject rd = JSONObject.fromObject(data);
+		String roomId = rd.getString("roomId");
+		String deskId = rd.getString("deskId");
+		String position = rd.getString("position");
+		Position p = PositionMap.getPosition(position);
+		boolean success = deskService.sitDesk(roomId, deskId, p);
+		writer(success);
 		return NONE;
 	}
 	

@@ -15,6 +15,10 @@ public enum Position {
 	private Position(int _nCode) {
 		this.nCode = _nCode;
 	}
+	
+	public int getCode(){
+		return this.nCode;
+	}
 
 	@Override
 	public String toString() {
