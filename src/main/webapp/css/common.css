@@ -12,4 +12,5 @@
 .seat-w{top: 33px; left: 0px;}
 
 .playground{color:#ccc;}
+.playground-content{background: url("../images/bg.png") 0px 0px repeat-x;}
 .exit-icon{width: 50px; height:30px;line-height: 30px;}

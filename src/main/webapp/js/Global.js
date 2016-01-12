@@ -7,3 +7,10 @@ var calPadding = function(){
         padding = parseInt((width - col * 132)/2);
     return padding;
 };
+
+var getWebSocket = (function(){
+    var ws = new GP.WebSocket();
+    return function(){
+        return ws;
+    }
+})();

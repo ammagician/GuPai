@@ -7,9 +7,29 @@ GP.Room = function(){
     this.el = $(".roomContent");
     this.toolBar = $(".toolBar");
     this.roomId = "";
+
+    this._initMessageCallback();
 };
 
 GP.Room.prototype = {
+    _initMessageCallback: function(){
+       var ws = getWebSocket();
+       ws.addMessageCallback("sitSeat", this._onMessage, this);
+    },
+
+    _onMessage: function(data){
+        var msg = data.msg,
+            deskId = msg.deskId,
+            p = msg.position,
+            empty = msg.empty;
+        var el = this.el;
+        var desk = el.find(".deskItem deskId=[" +deskId+ "]");
+        if(desk){
+            var seat = desk.find(".seat pos=[" +p+ "]");
+            this.setSeatStatus(seat, empty);
+        }
+    },
+
     resize: function(){
         clearTimeout(this.resizeRoomTimeout);
         this.resizeRoomTimeout = setTimeout(function(){
@@ -70,10 +90,10 @@ GP.Room.prototype = {
             available = desk.available;
         var str = "<div class='tc deskItem fl w100 h160 m15' deskId='" + id + "'>" +
             "<div class='deskIcon w100 h100 pr'>" +
-                "<div class='pa pointer seat seat-n' pos='n' seatEmpty='1'></div>" +
-                "<div class='pa pointer seat seat-e' pos='e' seatEmpty='1'></div>" +
-                "<div class='pa pointer seat seat-s' pos='s' seatEmpty='1'></div>" +
-                "<div class='pa pointer seat seat-w' pos='w' seatEmpty='1'></div>" +
+                "<div class='pa pointer seat seat-n' pos='north' seatEmpty='1'></div>" +
+                "<div class='pa pointer seat seat-e' pos='east' seatEmpty='1'></div>" +
+                "<div class='pa pointer seat seat-s' pos='south' seatEmpty='1'></div>" +
+                "<div class='pa pointer seat seat-w' pos='west' seatEmpty='1'></div>" +
             "</div>" +
             "<div class='deskName w100 h30 lh150'>" + name + "</div>" +
             //"<div class='deskMember w100 h30 lh150'>" + (available? "未满员": "满员") + "</div>" +
@@ -96,7 +116,7 @@ GP.Room.prototype = {
             if(res.code == "0" && flag){
                 $(".toolBar").hide();
                 $(".content").hide();
-                new GP.PlayGround(msg.deskId);
+                new GP.PlayGround(msg);
             }
             room.setSeatStatus(s, false);
         }});

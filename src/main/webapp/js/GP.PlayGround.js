@@ -3,17 +3,23 @@
  */
 ns("GP");
 
-GP.PlayGround = function(deskId){
-    this.deskId = deskId || "";
+GP.PlayGround = function(msg){
+    this.msg = msg || {};
+    this.roomId = msg.roomId || "";
+    this.deskId = msg.deskId || "";
+    this.position = msg.position || "";
     this.init();
 };
 
 GP.PlayGround.prototype = {
     init: function(){
+        var ws = getWebSocket();
+        ws.addMessageCallback("initPlayGround", this._onMessage, this);
+
         this._initLayout();
         this._bindEvent();
-
-        this._initWebSocket();
+        this.sendSitSeat(true);
+        this.sendInitPlayGround();
     },
     _initLayout: function(){
         this.el = $(".playground").show();
@@ -32,47 +38,35 @@ GP.PlayGround.prototype = {
         this.el.find(".exit-icon").bind("click", {scope: this}, this._exitGame);
     },
 
-    _initWebSocket: function(){
-        var webSocket = new WebSocket(constant.webSocket);
-        var pg = this;
-        if(webSocket != null){
-            this.webSocket = webSocket;
+    sendSitSeat: function(empty){
+        var msg = {
+            eventType: "sitSeat",
+            data: $.extend(true, {empty:empty}, this.msg)
+        };
+        this.sendMessage(msg);
+    },
 
-            webSocket.onerror = function(event) {
-                console.info("webSocket Error");
-            };
+    sendInitPlayGround: function(){
+        var msg = {
+            eventType: "initPlayGround",
+            deskId: this.deskId
+        };
+        this.sendMessage(msg);
+    },
 
-            webSocket.onopen = function(event) {
-                console.info("webSocket Connected");
-            };
-
-            webSocket.onmessage = function(event) {
-                pg.onWebSocketMessage(event);
-            };
+    sendMessage: function(msg){
+        var ws = getWebSocket();
+        if(ws){
+            ws.send($.toJSON(msg));
         }
     },
 
-    onWebSocketMessage: function(event){
-        var data = $.parseJSON(event.data);
+    _onMessage: function(data){
         var eventType = data.eventType;
         switch(eventType){
             case "initPlayGround" : this._initPlayGround(data.data);
                 break;
         }
-    },
-
-    sendMessage: function(msg){
-        if(this.webSocket){
-            this.webSocket.send($.toJSON(msg));
-        }
-    },
-
-    initPlayGround: function(){
-        var msg = {
-            eventType: "initPlayGround",
-            deskId: this.deskId
-        }
-        this.sendMessage(msg);
     },
 
     _initPlayGround: function(data){
@@ -81,12 +75,7 @@ GP.PlayGround.prototype = {
 
     _exitGame: function(e){
         var pg = e.data.scope;
-        pg.initPlayGround();
-        return;
-        if(pg.webSocket){
-            pg.webSocket.close();
-            pg.webSocket= null;
-        }
+        pg.sendSitSeat(false);
         pg.el.hide();
         $(".toolBar").show();
         $(".content").show();
@@ -98,5 +87,4 @@ GP.PlayGround.prototype = {
             console.info("resize");
         }, 100);
     }
-
-}
+};

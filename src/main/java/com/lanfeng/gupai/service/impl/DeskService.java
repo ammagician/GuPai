@@ -25,6 +25,10 @@ public class DeskService implements IDeskService {
 	
 	public Desk getDesk(String roomId, String deskId) {
 		List<Desk> desks = this.getDesksByRoomId(roomId);
+		return getDesk(desks, deskId);
+	}
+	
+	private Desk getDesk(List<Desk> desks, String deskId){
 		for(Desk d : desks){
 			if(d.getId().equals(deskId)){
 				return d;
@@ -34,10 +38,12 @@ public class DeskService implements IDeskService {
 	}
 
 	public boolean sitDesk(String roomId, String deskId, Position position) {
-		Desk d = this.getDesk(roomId, deskId);
+		List<Desk> desks = this.getDesksByRoomId(roomId);
+		Desk d = getDesk(desks, deskId);
 		Seat s = d.getSeat(position);
 		if(s.isAvailable()){
 			s.setAvailable(false);
+			CacheCenter.setDesks(roomId, desks);
 			return true;
 		}
 		return false;

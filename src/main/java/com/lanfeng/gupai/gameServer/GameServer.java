@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import javax.servlet.http.HttpServlet;
 import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -30,8 +31,8 @@ public class GameServer extends HttpServlet {
 	@OnMessage
 	public void onMessage(String message, Session session) {
 		System.out.println("message" + message);
-		JSONObject jsonObj = JSONObject.fromObject(message);
-		String eventType = jsonObj.getString("eventType");
+		JSONObject obj = JSONObject.fromObject(message);
+		String eventType = obj.getString("eventType");
 		JSONObject result = new JSONObject();
 		result.put("eventType", eventType);
 		if("initPlayGround".equals(eventType)){
@@ -41,11 +42,20 @@ public class GameServer extends HttpServlet {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		} else if("sitSeat".equals(eventType)){
+			for (Session client : clients) {
+				try {
+					result.put("data", obj.getJSONObject("data"));
+					client.getBasicRemote().sendText(result.toString());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}else{
 			for (Session client : clients) {
 				try {
 					result.put("data", CardsCreator.getInstance().getCards().toString());
-					session.getBasicRemote().sendText(result.toString());
+					client.getBasicRemote().sendText(result.toString());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -57,5 +67,10 @@ public class GameServer extends HttpServlet {
 	public void onClose(Session session) {
 		System.out.println("close" + session.getId());
 		clients.remove(session);
+	}
+	
+	@OnError
+	public void onError(Throwable t) {
+		System.out.println("error" + t.toString());
 	}
 }
