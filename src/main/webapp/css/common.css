@@ -1,4 +1,7 @@
-.toolBar{background-color: #707070; border-bottom: solid 1px #a9a9a9; z-index: 10;}
-.hallContent, .roomContent{background-color: #34383d;}
+.toolBar{color:#ccc;line-height:50px;background-color: #707070; border-bottom: solid 1px #a9a9a9; z-index: 10;}
+.navRoom:before, .navDesk:before{padding: 0 5px;color: #ccc;content: "/\00a0";}
+.content{top:50px;}
+.hallContent, .roomContent{background-color: #3c3f41;}
+.roomItem, .deskItem{color:#ccc;}
 .roomIcon, .deskIcon{border-radius: 10px; border:solid 1px #a9a9a9;}
 .roomIcon:hover, .deskIcon:hover{border-color:#bead67;}
