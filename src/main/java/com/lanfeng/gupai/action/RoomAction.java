@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import com.lanfeng.gupai.model.scence.Room;
 import com.lanfeng.gupai.service.IRoomService;
@@ -21,6 +22,17 @@ public class RoomAction extends BaseAction{
 
 	public String doGetRoomList() throws IOException {
 		HttpServletRequest req = getRequest();
+		
+		HttpSession session = req.getSession();
+		String user = (String) session.getAttribute("user");
+		if(!StringUtil.isValid(user)){
+			JSONObject rs = new JSONObject();
+			rs.put("msg", "No login");
+			writer(rs, -1);
+			return NONE;
+		}
+		
+		
 		String hallId = req.getParameter("hallId");
 		if(!StringUtil.isValid(hallId)){
 			JSONObject rd = JSONObject.fromObject(data);

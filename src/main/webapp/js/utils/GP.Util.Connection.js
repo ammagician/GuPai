@@ -18,7 +18,7 @@ GP.Util.Connection = function () {
 					self.listeners.onSuccess = null;
 				} else if (data.code < 0) {
 					if (data.code == -1){
-						location.replace(data.data);
+						window.location = "login.html";
 					} else {
 						var ls = self.getListeners("onSystemError");
 						for (var i = 0; i < ls.size(); i++) {

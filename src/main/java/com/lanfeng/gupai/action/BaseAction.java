@@ -77,4 +77,12 @@ public class BaseAction extends ActionSupport {
 		PrintWriter out = getPrintWriter();
 		out.print(ret.toString());
 	}
+	
+	public void writer(Object resultData, int code) throws IOException {
+		JSONObject ret = new JSONObject();
+		ret.put("data", resultData);
+		ret.put("code", code);
+		PrintWriter out = getPrintWriter();
+		out.print(ret.toString());
+	}
 }

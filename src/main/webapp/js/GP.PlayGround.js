@@ -15,6 +15,7 @@ GP.PlayGround.prototype = {
     init: function(){
         var ws = getWebSocket();
         ws.addMessageCallback("initPlayGround", this._onMessage, this);
+        ws.addMessageCallback("sitSeat", this._onMessage, this);
 
         this._initLayout();
         this._bindEvent();
@@ -67,10 +68,23 @@ GP.PlayGround.prototype = {
             case "initPlayGround" :
                 this._initPlayGround(data.data);
                 break;
+            case "sitSeat" :
+                this._sitSeat(data.data);
+                break;
         }
     },
 
     _initPlayGround: function(data){
+        console.info(data);
+    },
+
+    _sitSeat: function(data){
+        var deskId = data.deskId;
+        if(deskId != this.deskId){
+            return;
+        }
+
+
         console.info(data);
     },
 

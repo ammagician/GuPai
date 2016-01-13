@@ -23,15 +23,17 @@ GP.Hall.prototype = {
         var msg = {hallId: hallId};
         var conn = new GP.Util.Connection();
         conn.add("url", "RoomGetRoomList.do").add({async:true, type: "GET", data:{data:$.toJSON(msg)}});
-        conn.addListener("onSuccess", {onSuccess : function (conn, res) {
-            var halls = res.data;
-            halls.sort(function(a, b){
-                var ai = parseInt(a.name.substring(5, a.name.length));
-                var bi = parseInt(b.name.substring(5, b.name.length));
-                return ai - bi;
-            });
-            ctr.createRooms(halls);
-        }});
+        conn.addListener("onSuccess", {
+            onSuccess : function (conn, res) {
+                var halls = res.data;
+                halls.sort(function(a, b){
+                    var ai = parseInt(a.name.substring(5, a.name.length));
+                    var bi = parseInt(b.name.substring(5, b.name.length));
+                    return ai - bi;
+                });
+                ctr.createRooms(halls);
+            }
+        });
         conn.connect();
     },
 

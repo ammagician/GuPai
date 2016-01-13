@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <title></title>
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="css/base.css" type="text/css">
     <style type="text/css">
         body{background-color: #34383d;}
@@ -9,22 +10,30 @@
         .btn{color:#a9a9a9; background-color: #34383d; border:solid 1px #34383d; border-radius: 5px;height: 25px; width: 50px;}
         .btn:hover{background-color: #1c1e21;border-color: #34383d;}
     </style>
+
+    <script type="text/javascript" src="js/lib/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.json.min.js"></script>
+    <script type="text/javascript" src="js/utils/GP.Util.Global.js"></script>
+    <script type="text/javascript" src="js/utils/GP.Util.ArrayList.js"></script>
+    <script type="text/javascript" src="js/utils/GP.Util.Debug.js"></script>
+    <script type="text/javascript" src="js/utils/GP.Util.Connection.js"></script>
 </head>
 <body>
     <div class="w400 h tc bc pr">
         <div class="h200 pr" style="top: 30%;background-color: #1c1e21; border-radius: 5px; border:solid 1px #1c1e21;">
             <div class="h35 tl mt50 ml50">
-                <input class="input" type="text" placeholder="”√ªß√˚"/>
+                <input id="userInput" class="input" type="text" placeholder="Áî®Êà∑Âêç"/>
             </div>
             <div class="h35 tl mt10 ml50">
-                <input class="input" type="password" placeholder="√‹¬Î"/>
+                <input id="pwdInput" class="input" type="password" placeholder="ÂØÜÁ†Å"/>
             </div>
             <div class="h35 m10">
-                <button class="btn pointer">◊¢≤·</button>
-                <button class="btn pointer">”ŒøÕ</button>
-                <button class="btn pointer">µ«¬º</button>
+                <button id="resetBtn" class="btn pointer">ÈáçÁΩÆ</button>
+                <button id="loginBtn" class="btn pointer">ÁôªÈôÜ</button>
             </div>
         </div>
     </div>
+
+    <script type="text/javascript" src="js/login.js"></script>
 </body>
 </html>
