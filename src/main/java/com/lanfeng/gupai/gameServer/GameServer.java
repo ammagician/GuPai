@@ -14,6 +14,9 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.lanfeng.gupai.cacheCenter.CacheCenter;
 import com.lanfeng.gupai.service.impl.DeskService;
 import com.lanfeng.gupai.utils.CardsCreator;
@@ -45,6 +48,7 @@ public class GameServer extends HttpServlet implements ServletContextListener{
 	}	
 	
 	private static ServletContext sc;
+	private static final Logger logger = LogManager.getLogger(GameServer.class);
 	private static final long serialVersionUID = -4921051955121849404L;
 	private static final LinkedList<Session> clients = new LinkedList<Session>();
 
@@ -52,10 +56,12 @@ public class GameServer extends HttpServlet implements ServletContextListener{
 	public void onOpen(Session session) {
 		System.out.println("connect" + session.getId());
 		clients.add(session);
+		logger.info("webSocket " + session.getId() +" connected.");
 	}
 
 	@OnMessage
 	public void onMessage(String message, Session session) {
+		logger.info("webSocket send message \n" + message);
 		System.out.println("message" + message);
 		JSONObject obj = JSONObject.fromObject(message);
 		String eventType = obj.getString("eventType");
@@ -105,6 +111,7 @@ public class GameServer extends HttpServlet implements ServletContextListener{
 	public void onClose(Session session) {
 		System.out.println("close" + session.getId());
 		clients.remove(session);
+		logger.info("webSocket " + session.getId() +" close.");
 		
 		String d = CacheCenter.getString(session.getId());
 		if(StringUtil.isValid(d)){
@@ -130,7 +137,7 @@ public class GameServer extends HttpServlet implements ServletContextListener{
 	
 	@OnError
 	public void onError(Throwable t) {
-		System.out.println("error:");
-		System.out.println(t.toString());
+		System.out.println("webSocket error");
+		//System.out.println(t.toString());
 	}
 }
