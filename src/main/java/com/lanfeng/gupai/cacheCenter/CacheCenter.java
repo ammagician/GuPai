@@ -56,7 +56,7 @@ public class CacheCenter{
 		return SerializeUtil.deSerialize(bytes);
 	}
 	
-	public static List<Object> getObjects(String key){
+	public static List<Object> getObjectsFromSet(String key){
 		Jedis redis = server.getRedis();
 		Iterator<byte[]> iter = redis.smembers(key.getBytes()).iterator();
 		server.returnRedis(redis);
@@ -69,9 +69,22 @@ public class CacheCenter{
 		return result;
 	}
 	
-	public static <T extends Cachable> void setObjects(String key, T t){
+	public static <T extends Cachable> void setObjectToSet(String key, T t){
 		Jedis redis = server.getRedis();
 		redis.sadd(key.getBytes(), SerializeUtil.serialize(t)); 
+		server.returnRedis(redis);
+	}
+	
+	public static <T extends Cachable> void replaceObject(String key, T o , T n){
+		Jedis redis = server.getRedis();
+		redis.srem(key.getBytes(), SerializeUtil.serialize(o));
+		redis.sadd(key.getBytes(), SerializeUtil.serialize(n)); 
+		server.returnRedis(redis);
+	}
+	
+	public static <T extends Cachable> void delObjectFromSet(String key, T t){
+		Jedis redis = server.getRedis();
+		redis.srem(key.getBytes(), SerializeUtil.serialize(t));
 		server.returnRedis(redis);
 	}
 	
@@ -92,17 +105,17 @@ public class CacheCenter{
 	}
 	
 	public static void setRooms(String hallId, Room room){
-		setObjects(hallId, room);
+		setObjectToSet(hallId, room);
 	}
 	
 	public static void setRooms(String hallId, List<Room> rooms){
 		for(Room r : rooms){
-			setObjects(hallId, r);
+			setObjectToSet(hallId, r);
 		}
 	}
 	
 	public static List<Room> getRooms(String hallId){
-		List<Object> objs = getObjects(hallId);
+		List<Object> objs = getObjectsFromSet(hallId);
 		List<Room> rooms = new ArrayList<Room>();
 		for(Object o : objs){
 			rooms.add((Room) o);
@@ -119,7 +132,7 @@ public class CacheCenter{
 	}
 	
 	public static List<Desk> getDesks(String roomId){
-		List<Object> objs = getObjects(roomId);
+		List<Object> objs = getObjectsFromSet(roomId);
 		List<Desk> desks = new ArrayList<Desk>();
 		for(Object o : objs){
 			desks.add((Desk) o);
@@ -127,13 +140,17 @@ public class CacheCenter{
 		return desks;
 	}
 	
-	public static void setDesks(String roomId, Desk desk){
-		setObjects(roomId, desk);
+	public static void setDesk(String roomId, Desk desk){
+		setObjectToSet(roomId, desk);
+	}
+	
+	public static void delDesk(String roomId, Desk desk){
+		delObjectFromSet(roomId, desk);
 	}
 	
 	public static void setDesks(String roomId, List<Desk> desks){
 		for(Desk d : desks){
-			setObjects(roomId, d);
+			setObjectToSet(roomId, d);
 		}
 	}
 

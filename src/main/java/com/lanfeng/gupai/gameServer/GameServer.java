@@ -3,6 +3,9 @@ package com.lanfeng.gupai.gameServer;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -12,15 +15,36 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import com.lanfeng.gupai.cacheCenter.CacheCenter;
+import com.lanfeng.gupai.service.impl.DeskService;
 import com.lanfeng.gupai.utils.CardsCreator;
+import com.lanfeng.gupai.utils.PositionMap;
+import com.lanfeng.gupai.utils.ServiceUtil;
 import com.lanfeng.gupai.utils.common.JSONObject;
 import com.lanfeng.gupai.utils.common.StringUtil;
 
 @ServerEndpoint("/gameServer")
-public class GameServer extends HttpServlet {
+public class GameServer extends HttpServlet implements ServletContextListener{
 	/**
 	 *
 	 */
+	public void contextInitialized(ServletContextEvent ctxEvent) {
+		System.out.println("System init");
+		getSC(ctxEvent);
+        System.out.println("System init end");
+	}
+	
+	public void contextDestroyed(ServletContextEvent ctxEvent) {
+		System.out.println("SIL destoried");
+	}
+	
+	/**
+	 * @param ctxEvent
+	 */
+	private void getSC(ServletContextEvent ctxEvent) {
+		sc = ctxEvent.getServletContext();
+	}	
+	
+	private static ServletContext sc;
 	private static final long serialVersionUID = -4921051955121849404L;
 	private static final LinkedList<Session> clients = new LinkedList<Session>();
 
@@ -46,11 +70,16 @@ public class GameServer extends HttpServlet {
 			}
 		} else if("sitSeat".equals(eventType)){
 			JSONObject data = obj.getJSONObject("data");
-			if(data.getBoolean("empty")){
+			DeskService ds = ServiceUtil.getDeskService(sc);
+			boolean exit = data.getBoolean("exit");
+			if(exit){
 				CacheCenter.removeString(session.getId());
 			}else{
 				CacheCenter.setString(session.getId(), data.toString());
-			}			
+			}		
+			
+			ds.sitDesk(data.getString("roomId"), data.getString("deskId"), 
+					PositionMap.getPosition(data.getString("position")), exit);
 			
 			for (Session client : clients) {
 				try {
@@ -81,7 +110,14 @@ public class GameServer extends HttpServlet {
 		if(StringUtil.isValid(d)){
 			JSONObject result = new JSONObject();
 			result.put("eventType", "sitSeat");
-			result.put("data", JSONObject.fromObject(d));
+			JSONObject msg = JSONObject.fromObject(d);
+			
+			DeskService ds = ServiceUtil.getDeskService(sc);
+			ds.sitDesk(msg.getString("roomId"), msg.getString("deskId"), 
+					PositionMap.getPosition(msg.getString("position")), true);
+			
+			msg.put("exit", true);
+			result.put("data", msg);
 			for (Session client : clients) {
 				try {
 					client.getBasicRemote().sendText(result.toString());
@@ -94,6 +130,7 @@ public class GameServer extends HttpServlet {
 	
 	@OnError
 	public void onError(Throwable t) {
-		System.out.println("error" + t.toString());
+		System.out.println("error:");
+		System.out.println(t.toString());
 	}
 }

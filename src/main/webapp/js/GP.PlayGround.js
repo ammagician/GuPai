@@ -18,7 +18,7 @@ GP.PlayGround.prototype = {
 
         this._initLayout();
         this._bindEvent();
-        this.sendSitSeat(true);
+        this.sendSitSeat(false);
         this.sendInitPlayGround();
     },
     _initLayout: function(){
@@ -38,10 +38,10 @@ GP.PlayGround.prototype = {
         this.el.find(".exit-icon").bind("click", {scope: this}, this._exitGame);
     },
 
-    sendSitSeat: function(empty){
+    sendSitSeat: function(exit){
         var msg = {
             eventType: "sitSeat",
-            data: $.extend(true, {empty:empty}, this.msg)
+            data: $.extend(true, {exit:exit}, this.msg)
         };
         this.sendMessage(msg);
     },
@@ -56,7 +56,7 @@ GP.PlayGround.prototype = {
 
     sendMessage: function(msg){
         var ws = getWebSocket();
-        if(ws){
+        if(ws && ws.webSocket){
             ws.webSocket.send($.toJSON(msg));
         }
     },
@@ -64,7 +64,8 @@ GP.PlayGround.prototype = {
     _onMessage: function(data){
         var eventType = data.eventType;
         switch(eventType){
-            case "initPlayGround" : this._initPlayGround(data.data);
+            case "initPlayGround" :
+                this._initPlayGround(data.data);
                 break;
         }
     },
@@ -75,7 +76,7 @@ GP.PlayGround.prototype = {
 
     _exitGame: function(e){
         var pg = e.data.scope;
-        pg.sendSitSeat(false);
+        pg.sendSitSeat(true);
         pg.el.hide();
         $(".toolBar").show();
         $(".content").show();

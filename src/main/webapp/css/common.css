@@ -4,13 +4,14 @@
 .hallContent, .roomContent{background-color: #3c3f41;}
 .roomItem, .deskItem{color:#ccc;}
 .roomIcon, .deskIcon{border-radius: 10px; border:solid 1px #a9a9a9;}
+.deskIcon{background: url("../images/desk.png") center center no-repeat #5E84AE;}
 .roomIcon:hover, .deskIcon:hover{border-color:#bead67;}
 .seat{width:32px;height:32px;}
 .seat-n{top: 0px; left: 33px;}
 .seat-e{right: 0px; top: 33px;}
 .seat-s{bottom: 0px; left: 33px;}
 .seat-w{top: 33px; left: 0px;}
-.seat-on{background: url("../images/bg.png") 0px 0px repeat-x;}
+.seat-on{background: url("../images/user.png") center center no-repeat;}
 
 .playground{color:#ccc;}
 .playground-content{background: url("../images/bg.png") 0px 0px repeat-x;}

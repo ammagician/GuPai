@@ -72,7 +72,7 @@ public class DeskAction extends BaseAction{
 		String deskId = rd.getString("deskId");
 		String position = rd.getString("position");
 		Position p = PositionMap.getPosition(position);
-		boolean success = deskService.sitDesk(roomId, deskId, p);
+		boolean success = deskService.deskAvailable(roomId, deskId, p);
 		writer(success);
 		return NONE;
 	}

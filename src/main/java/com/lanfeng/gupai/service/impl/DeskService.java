@@ -37,19 +37,33 @@ public class DeskService implements IDeskService {
 		return null;
 	}
 
-	public boolean sitDesk(String roomId, String deskId, Position position) {
+	public boolean sitDesk(String roomId, String deskId, Position position, boolean exit) {
+		Desk d = getDesk(roomId, deskId);
+		if(d == null){
+			return false;
+		}
+		Seat s = d.getSeat(position);
+		if(exit || s.isAvailable()){
+			CacheCenter.delDesk(roomId, d);
+			if(exit){
+				s.setAvailable(true);
+			}else{
+				s.setAvailable(false);
+			}
+			CacheCenter.setDesk(roomId, d);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean deskAvailable(String roomId, String deskId, Position position) {
 		List<Desk> desks = this.getDesksByRoomId(roomId);
 		Desk d = getDesk(desks, deskId);
 		if(d == null){
 			return false;
 		}
 		Seat s = d.getSeat(position);
-		if(s.isAvailable()){
-			s.setAvailable(false);
-			CacheCenter.setDesks(roomId, desks);
-			return true;
-		}
-		return false;
+		return s.isAvailable();
 	}
 	
 	public List<Desk> getALLDesks() {

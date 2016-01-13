@@ -21,7 +21,7 @@ GP.Room.prototype = {
         var msg = data.data,
             deskId = msg.deskId,
             p = msg.position,
-            empty = msg.empty;
+            empty = msg.exit;
         var el = this.el;
         var desk = el.find(".deskItem[deskId=" +deskId+ "]");
         if(desk){
@@ -99,7 +99,7 @@ GP.Room.prototype = {
             var s = seats[i];
             status[s.position.toLowerCase()] = {
                 e:s.available? "1" : "0",
-                on: s.available? "seat-on" : ""
+                on: s.available? "" : "seat-on"
             }
 
             if(!s.available){
