@@ -68,7 +68,6 @@ GP.Hall.prototype = {
     },
 
     createRoom: function(id, name){
-        this.toolBar.find(".navRoom").removeClass("none").attr("roomId", id).html(name);
         this.el.hide();
         if(this.room){
             this.room.close();

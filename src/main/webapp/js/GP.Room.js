@@ -50,8 +50,9 @@ GP.Room.prototype = {
         }, 100);
     },
 
-    getDeskList : function(roomId){
+    getDeskList : function(roomId, roomName){
         this.roomId = roomId;
+        var roomName = roomName;
         var ctr = this;
         var msg = {roomId: roomId};
         var conn = new GP.Util.Connection();
@@ -61,6 +62,7 @@ GP.Room.prototype = {
             if(res.code == "-1"){
                 ctr._login();
             }else{
+                ctr.toolBar.find(".navRoom").removeClass("none").attr("roomId", ctr.roomId).html(roomName);
                 desks.sort(function(a, b){
                     var ai = parseInt(a.name.substring(5, a.name.length));
                     var bi = parseInt(b.name.substring(5, b.name.length));
