@@ -1,7 +1,8 @@
-package com.lanfeng.gupai.action;
+package com.lanfeng.gupai.action.game;
 
 import java.io.IOException;
 
+import com.lanfeng.gupai.action.BaseAction;
 import com.lanfeng.gupai.utils.common.JSONArray;
 import com.lanfeng.gupai.utils.common.JSONObject;
 import com.lanfeng.gupai.utils.common.StringUtil;

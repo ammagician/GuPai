@@ -19,6 +19,15 @@
 	<listener>
 		<listener-class>com.lanfeng.gupai.gameServer.GameServer</listener-class>
 	</listener>
+    <filter>
+        <filter-name>loginFilter</filter-name>
+        <filter-class>com.lanfeng.gupai.filter.LoginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>loginFilter</filter-name>
+        <url-pattern>/Game/*</url-pattern>
+    </filter-mapping>
+
 	<filter>
 		<filter-name>struts2</filter-name>
 		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
@@ -41,7 +50,7 @@
 	</servlet-mapping>
 	
 	<welcome-file-list>
-		<welcome-file>login.html</welcome-file>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 	
 </web-app>

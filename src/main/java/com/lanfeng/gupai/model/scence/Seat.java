@@ -5,6 +5,8 @@ package com.lanfeng.gupai.model.scence;
 
 import com.lanfeng.gupai.cacheCenter.Cachable;
 import com.lanfeng.gupai.dictionary.Position;
+import com.lanfeng.gupai.utils.common.JSONArray;
+import com.lanfeng.gupai.utils.common.JSONObject;
 
 /**
  * @author lanfeng
@@ -17,7 +19,7 @@ public class Seat extends Cachable{
 	private static final long serialVersionUID = 2059291397390603644L;
 	private Position position;
 	private boolean available = true;
-	private String userId;
+	private String userId = "";
 	
 	public Seat() {
 		super();
@@ -60,5 +62,14 @@ public class Seat extends Cachable{
 				+ ", userId=" + userId + "]";
 	}
 	
+	
+	public JSONObject toJSON(){
+		JSONObject json = new JSONObject();
+		json.put("userId", userId);
+		json.put("position", position);
+		json.put("available", available);
+		
+		return json;
+	}
 	
 }

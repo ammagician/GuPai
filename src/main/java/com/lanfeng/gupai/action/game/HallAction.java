@@ -1,11 +1,12 @@
 /**
  * 
  */
-package com.lanfeng.gupai.action;
+package com.lanfeng.gupai.action.game;
 
 import java.io.IOException;
 import java.util.List;
 
+import com.lanfeng.gupai.action.BaseAction;
 import com.lanfeng.gupai.model.scence.Hall;
 import com.lanfeng.gupai.service.IHallService;
 import com.lanfeng.gupai.utils.common.JSONObject;

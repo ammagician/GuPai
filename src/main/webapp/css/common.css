@@ -1,7 +1,16 @@
+/*login*/
+html, body{width:100%; height: 100%; background-color: #34383d;}
+#loginDiv{z-index: 10000;background-color: #34383d;}
+.loginContent{background-color: #1c1e21; border-radius: 5px; border:solid 1px #1c1e21;}
+.gp-input{padding: 2px 5px;width:300px;height:30px;color:#a9a9a9;background-color: #34383d; border:solid 1px #34383d; border-radius: 5px;}
+.gp-btn{color:#a9a9a9; background-color: #34383d; border:solid 1px #34383d; border-radius: 5px;height: 25px; width: 50px;}
+.gp-btn:hover{background-color: #1c1e21;border-color: #34383d;}
+
+/*main*/
 .toolBar{color:#ccc;line-height:50px;background-color: #707070; border-bottom: solid 1px #a9a9a9; z-index: 10;}
 .navRoom:before, .navDesk:before{padding: 0 5px;color: #ccc;content: "/\00a0";}
 .content{top:50px;}
-.hallContent, .roomContent{background-color: #3c3f41;}
+.hallContent, .roomContent{background-color: #34383d;}
 .roomItem, .deskItem{color:#ccc;}
 .roomIcon, .deskIcon{border-radius: 10px; border:solid 1px #a9a9a9;}
 .deskIcon{background: url("../images/desk.png") center center no-repeat #5E84AE;}
@@ -13,6 +22,7 @@
 .seat-w{top: 33px; left: 0px;}
 .seat-on{background: url("../images/user.png") center center no-repeat;}
 
+/*playground*/
 .playground{color:#ccc;}
 .playground-content{background: url("../images/bg.png") 0px 0px repeat-x;}
 .exit-icon{width: 50px; height:30px;line-height: 30px;}

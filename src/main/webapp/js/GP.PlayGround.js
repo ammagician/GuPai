@@ -16,6 +16,8 @@ GP.PlayGround.prototype = {
         var ws = getWebSocket();
         ws.addMessageCallback("initPlayGround", this._onMessage, this);
         ws.addMessageCallback("sitSeat", this._onMessage, this);
+        ws.addMessageCallback("leaveSeat", this._onMessage, this);
+        ws.addMessageCallback("login", this._onMessage, this);
 
         this._initLayout();
         this._bindEvent();
@@ -39,10 +41,17 @@ GP.PlayGround.prototype = {
         this.el.find(".exit-icon").bind("click", {scope: this}, this._exitGame);
     },
 
-    sendSitSeat: function(exit){
+    sendSitSeat: function(){
         var msg = {
             eventType: "sitSeat",
-            data: $.extend(true, {exit:exit}, this.msg)
+            data: this.msg
+        };
+        this.sendMessage(msg);
+    },
+    sendLeaveSeat: function(){
+        var msg = {
+            eventType: "leaveSeat",
+            data: this.msg
         };
         this.sendMessage(msg);
     },
@@ -50,7 +59,7 @@ GP.PlayGround.prototype = {
     sendInitPlayGround: function(){
         var msg = {
             eventType: "initPlayGround",
-            deskId: this.deskId
+            data: {roomId: this.roomId, deskId: this.deskId}
         };
         this.sendMessage(msg);
     },
@@ -71,7 +80,17 @@ GP.PlayGround.prototype = {
             case "sitSeat" :
                 this._sitSeat(data.data);
                 break;
+            case "leaveSeat" :
+                this._leaveSeat(data.data);
+                break;
+            case "login" :
+                this._login();
+                break;
         }
+    },
+
+    _login: function(){
+
     },
 
     _initPlayGround: function(data){
@@ -84,16 +103,30 @@ GP.PlayGround.prototype = {
             return;
         }
 
+        if(data.userId){
+            this._addUser(data);
+        }
+    },
 
-        console.info(data);
+    _leaveSeat: function(data){
+        var deskId = data.deskId;
+        if(deskId != this.deskId){
+            return;
+        }
+        this._removeUser(data);
+    },
+
+    _addUser: function(data){
+
+    },
+
+    _removeUser: function(data){
+
     },
 
     _exitGame: function(e){
         var pg = e.data.scope;
-        pg.sendSitSeat(true);
-        pg.el.hide();
-        $(".toolBar").show();
-        $(".content").show();
+        pg.close(true);
     },
 
     resize: function(){
@@ -101,5 +134,20 @@ GP.PlayGround.prototype = {
         this.resizeRoomTimeout = setTimeout(function(){
             console.info("resize");
         }, 100);
+    },
+
+    close: function(leaveSeat){
+        var ws = getWebSocket();
+        ws.removeMessageCallback("initPlayGround", this._onMessage);
+        ws.removeMessageCallback("sitSeat", this._onMessage);
+        ws.removeMessageCallback("leaveSeat", this._onMessage);
+
+        if(leaveSeat){
+            this.sendLeaveSeat();
+        }
+
+        this.el.empty().hide();
+        $(".toolBar").show();
+        $(".content").show();
     }
 };

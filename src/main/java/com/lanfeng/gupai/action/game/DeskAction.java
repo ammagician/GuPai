@@ -1,4 +1,4 @@
-package com.lanfeng.gupai.action;
+package com.lanfeng.gupai.action.game;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.lanfeng.gupai.action.BaseAction;
 import com.lanfeng.gupai.dictionary.Position;
 import com.lanfeng.gupai.model.scence.Desk;
 import com.lanfeng.gupai.model.scence.Room;

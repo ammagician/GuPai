@@ -18,6 +18,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.lanfeng.gupai.cacheCenter.Cachable;
 import com.lanfeng.gupai.dictionary.Position;
+import com.lanfeng.gupai.utils.common.JSONArray;
+import com.lanfeng.gupai.utils.common.JSONObject;
 
 /**
  * @author lanfeng
@@ -123,6 +125,23 @@ public class Desk extends Cachable{
 	public String toString() {
 		return "Desk [seats=" + seats + ", roomId=" + roomId + ", id=" + id
 				+ ", name=" + name + ", available=" + isAvailable() + "]";
+	}
+	
+	public JSONObject toJSON(){
+		JSONObject json = new JSONObject();
+		json.put("id", id);
+		json.put("name", name);
+		json.put("roomId", roomId);
+		json.put("available", available);
+		
+		JSONArray sa = new JSONArray();
+		for(Seat s : seats){
+			sa.add(s.toJSON());
+		}
+		
+		json.put("seats", seats);
+		
+		return json;
 	}
 
 }

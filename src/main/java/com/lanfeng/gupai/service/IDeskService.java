@@ -8,7 +8,8 @@ import com.lanfeng.gupai.model.scence.Desk;
 public interface IDeskService {
 	public List<Desk> getDesksByRoomId(String roomId);
 	public Desk getDesk(String roomId, String deskId);
-	public boolean sitDesk(String roomId, String deskId, Position position, boolean exit);
+	public boolean sitDesk(String userId, String roomId, String deskId, Position position);
+	public void leaveDesk(String userId, String roomId, String deskId, Position position);
 	public boolean deskAvailable(String roomId, String deskId, Position position);
 	public List<Desk> getALLDesks();
 	public Desk addDesk(Desk desk);

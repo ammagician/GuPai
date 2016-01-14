@@ -1,4 +1,4 @@
-package com.lanfeng.gupai.action;
+package com.lanfeng.gupai.action.game;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.lanfeng.gupai.action.BaseAction;
 import com.lanfeng.gupai.model.scence.Room;
 import com.lanfeng.gupai.service.IRoomService;
 import com.lanfeng.gupai.utils.common.JSONArray;
@@ -23,6 +24,7 @@ public class RoomAction extends BaseAction{
 	public String doGetRoomList() throws IOException {
 		HttpServletRequest req = getRequest();
 		
+		/*
 		HttpSession session = req.getSession();
 		String user = (String) session.getAttribute("user");
 		if(!StringUtil.isValid(user)){
@@ -31,7 +33,7 @@ public class RoomAction extends BaseAction{
 			writer(rs, -1);
 			return NONE;
 		}
-		
+		*/
 		
 		String hallId = req.getParameter("hallId");
 		if(!StringUtil.isValid(hallId)){

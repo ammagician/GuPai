@@ -9,31 +9,44 @@ GP.Room = function(){
     this.roomId = "";
 
     this._initMessageCallback();
+    this.resize();
 };
 
 GP.Room.prototype = {
     _initMessageCallback: function(){
        var ws = getWebSocket();
        ws.addMessageCallback("sitSeat", this._onMessage, this);
+       ws.addMessageCallback("leaveSeat", this._onMessage, this);
     },
 
     _onMessage: function(data){
-        var msg = data.data,
-            deskId = msg.deskId,
-            p = msg.position,
-            empty = msg.exit;
-        var el = this.el;
-        var desk = el.find(".deskItem[deskId=" +deskId+ "]");
-        if(desk){
-            var seat = desk.find(".seat[pos=" +p+ "]");
-            this.setSeatStatus(seat, empty);
+        var eventType = data.eventType;
+        switch(eventType){
+            case "sitSeat" :
+                this._onSitSeatMessage(data.data);
+                break;
+            case "leaveSeat" :
+                this._onLeaveSeatMessage(data.data);
+                break;
         }
+    },
+
+    _onSitSeatMessage: function(data){
+        var deskId = data.deskId,
+            p = data.position;
+        this.setSeatStatus(deskId, p, false);
+    },
+
+    _onLeaveSeatMessage: function(data){
+        var deskId = data.deskId,
+            p = data.position;
+        this.setSeatStatus(deskId, p, true);
     },
 
     resize: function(){
         clearTimeout(this.resizeRoomTimeout);
         this.resizeRoomTimeout = setTimeout(function(){
-            $(".roomContent").css("padding-left", calPadding() + "px");
+            $(".roomContent").css("padding-left", globalFn.calPadding() + "px");
         }, 100);
     },
 
@@ -42,15 +55,19 @@ GP.Room.prototype = {
         var ctr = this;
         var msg = {roomId: roomId};
         var conn = new GP.Util.Connection();
-        conn.add("url", "DeskGetDeskList.do").add({async:true, type: "GET", data:{data:$.toJSON(msg)}});
+        conn.add("url", "Game/DeskGetDeskList.do").add({async:true, type: "GET", data:{data:$.toJSON(msg)}});
         conn.addListener("onSuccess", {onSuccess : function (conn, res) {
             var desks = res.data;
-            desks.sort(function(a, b){
-                var ai = parseInt(a.name.substring(5, a.name.length));
-                var bi = parseInt(b.name.substring(5, b.name.length));
-                return ai - bi;
-            });
-            ctr.createDesks(desks);
+            if(res.code == "-1"){
+                ctr._login();
+            }else{
+                desks.sort(function(a, b){
+                    var ai = parseInt(a.name.substring(5, a.name.length));
+                    var bi = parseInt(b.name.substring(5, b.name.length));
+                    return ai - bi;
+                });
+                ctr.createDesks(desks);
+            }
         }});
         conn.connect();
     },
@@ -66,9 +83,9 @@ GP.Room.prototype = {
 
         var room = this;
         var roomContent = this.el;
-        roomContent.removeClass("none");
-        roomContent.empty();
+        roomContent.empty().show();
         roomContent.append($(html));
+        roomContent.unbind("click");
         roomContent.bind("click", function(e){
             var target = $(e.target);
             if(target.hasClass("seat")){
@@ -100,11 +117,7 @@ GP.Room.prototype = {
             status[s.position.toLowerCase()] = {
                 e:s.available? "1" : "0",
                 on: s.available? "" : "seat-on"
-            }
-
-            if(!s.available){
-                console.info(s);
-            }
+            };
         }
         var str = "<div class='tc deskItem fl w100 h160 m15' deskId='" + id + "'>" +
             "<div class='deskIcon w100 h100 pr'>" +
@@ -120,6 +133,7 @@ GP.Room.prototype = {
     },
 
     sitSeat: function(deskId, deskName, position, seat){
+        var ctr = this;
         var msg = {
             roomId: this.roomId,
             deskId: deskId,
@@ -128,14 +142,14 @@ GP.Room.prototype = {
         var s = seat;
         var room = this;
         var conn = new GP.Util.Connection();
-        conn.add("url", "DeskSitSeat.do").add({async:true, data:{data:$.toJSON(msg)}});
+        conn.add("url", "Game/DeskSitSeat.do").add({async:true, data:{data:$.toJSON(msg)}});
         conn.addListener("onSuccess", {onSuccess : function (conn, res) {
             var flag = res.data;
             if(res.code == "0"){
                 if(flag){
                     $(".toolBar").hide();
                     $(".content").hide();
-                    new GP.PlayGround(msg);
+                    ctr.desk = new GP.PlayGround(msg);
                 }else{
                     room.setSeatStatus(s, false);
                 }
@@ -144,11 +158,26 @@ GP.Room.prototype = {
         conn.connect();
     },
 
-    setSeatStatus: function(seat, empty){
-        if(empty){
-            seat.removeClass("seat-on");
-        }else{
-            seat.addClass("seat-on");
+    setSeatStatus: function(deskId, position, empty){
+        var el = this.el;
+        var desk = el.find(".deskItem[deskId=" +deskId+ "]");
+        if(desk){
+            var seat = desk.find(".seat[pos=" + position + "]");
+            if(empty){
+                seat.removeClass("seat-on");
+            }else{
+                seat.addClass("seat-on");
+            }
         }
+    },
+
+    close: function(){
+        var ws = getWebSocket();
+        ws.removeMessageCallback("sitSeat", this._onMessage);
+        ws.removeMessageCallback("leaveSeat", this._onMessage);
+        if(this.desk){
+            this.desk.close();
+        }
+        this.el.empty().hide();
     }
-}
+};

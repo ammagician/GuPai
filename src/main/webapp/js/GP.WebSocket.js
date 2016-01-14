@@ -68,10 +68,22 @@ GP.WebSocket.prototype = {
 
         var fns = cs[eventType];
         for(var i= 0,len=fns.length; i<len; i++){
-            if(fn === fns[i]){
+            if(fn == fns[i].fn){
                 fns.splice(i, 1);
+                --i;
+                --len;
                 break;
             }
+        }
+        if(fns.length == 0){
+            delete cs[eventType];
+        }
+    },
+
+    close: function(){
+        this.messageCallbacks = null;
+        if(this.webSocket){
+            this.webSocket.close();
         }
     }
 }

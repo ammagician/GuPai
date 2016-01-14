@@ -22,7 +22,7 @@ GP.Hall.prototype = {
         var ctr = this;
         var msg = {hallId: hallId};
         var conn = new GP.Util.Connection();
-        conn.add("url", "RoomGetRoomList.do").add({async:true, type: "GET", data:{data:$.toJSON(msg)}});
+        conn.add("url", "Game/RoomGetRoomList.do").add({async:true, type: "GET", data:{data:$.toJSON(msg)}});
         conn.addListener("onSuccess", {
             onSuccess : function (conn, res) {
                 var halls = res.data;
@@ -62,15 +62,19 @@ GP.Hall.prototype = {
             if(target.hasClass("roomIcon")){
                 var id = target.parent().attr("roomId");
                 var name = target.parent().find(".roomName").html();
-                ctr.showRoom(id, name);
+                ctr.createRoom(id, name);
             }
         });
     },
 
-    showRoom: function(id, name){
+    createRoom: function(id, name){
         this.toolBar.find(".navRoom").removeClass("none").attr("roomId", id).html(name);
-        this.el.addClass("none");
-        var room = new GP.Room();
-        room.getDeskList(id);
+        this.el.hide();
+        if(this.room){
+            this.room.close();
+            this.room = null;
+        }
+        this.room = new GP.Room();
+        this.room.getDeskList(id);
     }
 }

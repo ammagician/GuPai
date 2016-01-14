@@ -17,21 +17,11 @@ GP.Util.Connection = function () {
 					}
 					self.listeners.onSuccess = null;
 				} else if (data.code < 0) {
-					if (data.code == -1){
-						window.location = "login.html";
-					} else {
-						var ls = self.getListeners("onSystemError");
-						for (var i = 0; i < ls.size(); i++) {
-							ls.get(i).onSystemError(self, data);
-						}
-						self.listeners.onSystemError = null;
+					if (data.code == -1){ // login
+						if(window.app.loginObj){
+                            window.app.loginObj.reLogin();
+                        }
 					}
-				} else {
-					var ls = self.getListeners("onAppError");
-					for (var i = 0; i < ls.size(); i++) {
-						ls.get(i).onAppError(self, data);
-					}
-					self.listeners.onAppError = null;
 				}
 			} catch(err) {
 				GP.Util.Debug.error(err);

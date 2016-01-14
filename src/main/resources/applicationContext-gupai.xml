@@ -31,9 +31,9 @@
 
 
 	<!-- action configuration -->
-	<bean id="LoginAction" class="com.lanfeng.gupai.action.LoginAction" scope="prototype" />
-	<bean id="HallAction" class="com.lanfeng.gupai.action.HallAction" scope="prototype" />
-	<bean id="RoomAction" class="com.lanfeng.gupai.action.RoomAction" scope="prototype" />
-	<bean id="DeskAction" class="com.lanfeng.gupai.action.DeskAction" scope="prototype" />
+	<bean id="LoginAction" class="com.lanfeng.gupai.action.login.LoginAction" scope="prototype" />
+	<bean id="HallAction" class="com.lanfeng.gupai.action.game.HallAction" scope="prototype" />
+	<bean id="RoomAction" class="com.lanfeng.gupai.action.game.RoomAction" scope="prototype" />
+	<bean id="DeskAction" class="com.lanfeng.gupai.action.game.DeskAction" scope="prototype" />
 
 </beans>
