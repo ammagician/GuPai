@@ -24,5 +24,25 @@ var globalFn = {
             ws.close();
         }
         this.initWebSocket();
+    },
+
+    _initCircleMap: function(position){
+        var circle = ["NORTH", "WEST", "SOUTH", "EAST"];
+        var _circle_ = ["bottom", "right", "top", "left"];
+        var cIndex = 0;
+        var p = position;
+        var circleMap = {};
+        circleMap[p] = _circle_[cIndex];
+        var index = circle.indexOf(p);
+        for(var i=0;i<3;i++){
+            index++;
+            if(index == 4){
+                index = 0;
+            }
+            ++cIndex;
+            p = circle[index];
+            circleMap[p] = _circle_[cIndex];
+        }
+        return circleMap;
     }
 };

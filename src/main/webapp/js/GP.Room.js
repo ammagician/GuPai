@@ -123,10 +123,10 @@ GP.Room.prototype = {
         }
         var str = "<div class='tc deskItem fl w100 h160 m15' deskId='" + id + "'>" +
             "<div class='deskIcon w100 h100 pr'>" +
-                "<div class='pa pointer seat seat-n "+status["north"].on+"' pos='north' seatEmpty='" +status["north"].e+ "'></div>" +
-                "<div class='pa pointer seat seat-e "+status["east"].on+"' pos='east' seatEmpty='" +status["east"].e+ "'></div>" +
-                "<div class='pa pointer seat seat-s "+status["south"].on+"' pos='south' seatEmpty='" +status["south"].e+ "'></div>" +
-                "<div class='pa pointer seat seat-w "+status["west"].on+"' pos='west' seatEmpty='" +status["west"].e+ "'></div>" +
+                "<div class='pa pointer seat seat-n "+status["north"].on+"' pos='NORTH' seatEmpty='" +status["north"].e+ "'></div>" +
+                "<div class='pa pointer seat seat-e "+status["east"].on+"' pos='EAST' seatEmpty='" +status["east"].e+ "'></div>" +
+                "<div class='pa pointer seat seat-s "+status["south"].on+"' pos='SOUTH' seatEmpty='" +status["south"].e+ "'></div>" +
+                "<div class='pa pointer seat seat-w "+status["west"].on+"' pos='WEST' seatEmpty='" +status["west"].e+ "'></div>" +
             "</div>" +
             "<div class='deskName w100 h30 lh150'>" + name + "</div>" +
             //"<div class='deskMember w100 h30 lh150'>" + (available? "未满员": "满员") + "</div>" +

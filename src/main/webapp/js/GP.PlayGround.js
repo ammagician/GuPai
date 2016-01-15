@@ -13,6 +13,8 @@ GP.PlayGround = function(msg){
 
 GP.PlayGround.prototype = {
     init: function(){
+        this.circleMap = window.globalFn._initCircleMap(this.position);
+
         var ws = getWebSocket();
         ws.addMessageCallback("initPlayGround", this._onMessage, this);
         ws.addMessageCallback("sitSeat", this._onMessage, this);
@@ -31,10 +33,36 @@ GP.PlayGround.prototype = {
                 "<div class='playground-toolbar fullWidth h30'>" +
                     "<div class='pointer exit-icon fr mr20'>退出</div>" +
                 "</div>" +
-                "<div id='pgc' class='playground-content fullWidth'></div>" +
+                "<div id='pgc' class='pr playground-content fullWidth'>" +
+                    "<div class='fl fullHeight pg-content-left'>" +
+                        "<div class='fl fullSize tc thc desk-left'>left</div>" +
+                    "</div>" +
+                    "<div class='fl fullHeight pg-content-center'>" +
+                        "<div class='fullWidth tc thc desk-top'>top</div>" +
+                        "<div class='fullWidth tc thc desk-center'>center</div>" +
+                        "<div class='fullWidth tc thc desk-bottom'>bottom</div>" +
+                    "</div>" +
+                    "<div class='fl fullHeight pg-content-right'>" +
+                        "<div class='fr fullSize tc thc desk-right'>right</div>" +
+                    "</div>" +
+                    "<div class='cb'></div>" +
+                "</div>" +
             "</div>";
         this.el.append($(html));
         this.cavansEl = this.el.find("#pgc").height(h);
+        this.desk_top = this.cavansEl.find(".desk-top");
+        this.desk_right = this.cavansEl.find(".desk-right");
+        this.desk_bottom = this.cavansEl.find(".desk-bottom");
+        this.desk_left = this.cavansEl.find(".desk-left");
+        this.desk_center = this.cavansEl.find(".desk-center");
+
+        this.deskMap = {
+            top: this.desk_top,
+            right: this.desk_right,
+            bottom: this.desk_bottom,
+            left: this.desk_left,
+            center: this.desk_center
+        }
     },
 
     _bindEvent: function(){
@@ -90,11 +118,20 @@ GP.PlayGround.prototype = {
     },
 
     _login: function(){
-
+        this.close();
+        window.app.loginObj.reLogin();
     },
 
     _initPlayGround: function(data){
         console.info(data);
+        var ss = data.desk.seats;
+        for(var i= 0; i<4; i++){
+            var s = ss[i],
+                p = s.position,
+                userId = s.userId || p,
+                pp = this.circleMap[p];
+            this.deskMap[pp].attr("userId", userId).html(userId);
+        }
     },
 
     _sitSeat: function(data){
@@ -116,12 +153,17 @@ GP.PlayGround.prototype = {
         this._removeUser(data);
     },
 
-    _addUser: function(data){
-
+    _addUser: function(d){
+        var p = d.position,
+            userId = d.userId;
+        var pp = this.circleMap[p];
+        this.deskMap[pp].attr("userId", userId).html(userId);
     },
 
-    _removeUser: function(data){
-
+    _removeUser: function(d){
+        var p = d.position;
+        var pp = this.circleMap[p];
+        this.deskMap[pp].attr("userId", "").html(p);
     },
 
     _exitGame: function(e){

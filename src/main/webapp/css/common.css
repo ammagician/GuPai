@@ -26,3 +26,12 @@ html, body{width:100%; height: 100%; background-color: #34383d;}
 .playground{color:#ccc;}
 .playground-content{background: url("../images/bg.png") 0px 0px repeat-x;}
 .exit-icon{width: 50px; height:30px;line-height: 30px;}
+.pg-content-left{width:25%;}
+.pg-content-center{width:50%;}
+.pg-content-right{width:25%;}
+
+.desk-right{}
+.desk-left{}
+.desk-top{height:25%;line-height: 12.5;}
+.desk-center{height:50%;line-height: 25;}
+.desk-bottom{height:25%;line-height: 12.5;}

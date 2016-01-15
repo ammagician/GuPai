@@ -126,10 +126,11 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 	private void initPlayGround(Session session, String roomId, String deskId){
 		DeskService ds = ServiceUtil.getDeskService(sc);
 		Desk d = ds.getDesk(roomId, deskId);
-		
+		JSONObject desk = new JSONObject();
+		desk.put("desk", d.toJSON());
 		JSONObject result = new JSONObject();
 		result.put("eventType", "initPlayGround");
-		result.put("data", d.toJSON());
+		result.put("data", desk);
 		sendMessage(session, result);
 		// CardsCreator.getInstance().getCards().toString());
 	}
