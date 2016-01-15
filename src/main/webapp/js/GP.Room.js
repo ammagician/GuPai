@@ -166,9 +166,9 @@ GP.Room.prototype = {
         if(desk){
             var seat = desk.find(".seat[pos=" + position + "]");
             if(empty){
-                seat.removeClass("seat-on");
+                seat.removeClass("seat-on").attr("seatEmpty", "1");
             }else{
-                seat.addClass("seat-on");
+                seat.addClass("seat-on").attr("seatEmpty", "0");
             }
         }
     },

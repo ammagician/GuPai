@@ -35,15 +35,45 @@ GP.PlayGround.prototype = {
                 "</div>" +
                 "<div id='pgc' class='pr playground-content fullWidth'>" +
                     "<div class='fl fullHeight pg-content-left'>" +
-                        "<div class='fl fullSize tc thc desk-left'>left</div>" +
+                        "<div class='fl fullSize tc thc desk-left'>" +
+                            "<div class='deskInfo fl'>" +
+                                "<div class='fullHeight userInfo'></div>" +
+                                "<div class='fullHeight winCards'></div>" +
+                            "</div>" +
+                            "<div class='leftCards fl'></div>" +
+                        "</div>" +
                     "</div>" +
                     "<div class='fl fullHeight pg-content-center'>" +
-                        "<div class='fullWidth tc thc desk-top'>top</div>" +
-                        "<div class='fullWidth tc thc desk-center'>center</div>" +
-                        "<div class='fullWidth tc thc desk-bottom'>bottom</div>" +
+                        "<div class='fullWidth tc thc desk-top'>" +
+                            "<div class='deskInfo'>" +
+                                "<div class='fullHeight fl userInfo'></div>" +
+                                "<div class='fullHeight fl winCards'></div>" +
+                            "</div>" +
+                            "<div class='leftCards'></div>" +
+                        "</div>" +
+                        "<div class='fullWidth tc thc desk-center'>" +
+                        "</div>" +
+                        "<div class='fullWidth tc thc desk-bottom pr'>" +
+                            "<div class='playBtns bc tc'>" +
+                                "<button class='fl gp-btn readyBtn'>开始</button>" +
+                                "<button class='fl gp-btn outCardBtn'>出</button>" +
+                                "<button class='fl gp-btn passCardBtn'>过</button>" +
+                            "</div>" +
+                            "<div class='leftCards'></div>" +
+                            "<div class='deskInfo'>" +
+                                "<div class='fl fullHeight userInfo'></div>" +
+                                "<div class='fl fullHeight winCards'></div>" +
+                            "</div>" +
+                        "</div>" +
                     "</div>" +
                     "<div class='fl fullHeight pg-content-right'>" +
-                        "<div class='fr fullSize tc thc desk-right'>right</div>" +
+                        "<div class='fr fullSize tc thc desk-right'>" +
+                            "<div class='leftCards fl'></div>" +
+                            "<div class='deskInfo fl'>" +
+                                "<div class='fullHeight userInfo'></div>" +
+                                "<div class='fullHeight winCards'></div>" +
+                            "</div>" +
+                        "</div>" +
                     "</div>" +
                     "<div class='cb'></div>" +
                 "</div>" +
@@ -92,6 +122,22 @@ GP.PlayGround.prototype = {
         this.sendMessage(msg);
     },
 
+    sendReadyPlay: function(){
+        var msg = {
+            eventType: "readyPlay",
+            data: this.msg
+        };
+        this.sendMessage(msg);
+    },
+
+    sendCancelReady: function(){
+        var msg = {
+            eventType: "cancelReady",
+            data: this.msg
+        };
+        this.sendMessage(msg);
+    },
+
     sendMessage: function(msg){
         var ws = getWebSocket();
         if(ws && ws.webSocket){
@@ -114,6 +160,11 @@ GP.PlayGround.prototype = {
             case "login" :
                 this._login();
                 break;
+            case "readyPlay" :
+                this._readyPlay(data.data);
+            case "cancelReady" :
+                this._cancelReady(data.data);
+                break;
         }
     },
 
@@ -128,9 +179,9 @@ GP.PlayGround.prototype = {
         for(var i= 0; i<4; i++){
             var s = ss[i],
                 p = s.position,
-                userId = s.userId || p,
+                userId = s.userId,
                 pp = this.circleMap[p];
-            this.deskMap[pp].attr("userId", userId).html(userId);
+            this.deskMap[pp].attr("userId", userId).find(".userInfo").html(userId);
         }
     },
 
@@ -157,13 +208,25 @@ GP.PlayGround.prototype = {
         var p = d.position,
             userId = d.userId;
         var pp = this.circleMap[p];
-        this.deskMap[pp].attr("userId", userId).html(userId);
+        this.deskMap[pp].attr("userId", userId).find(".userInfo").html(userId);
     },
 
     _removeUser: function(d){
         var p = d.position;
         var pp = this.circleMap[p];
-        this.deskMap[pp].attr("userId", "").html(p);
+        this.deskMap[pp].attr("userId", "").find(".userInfo").html(p);
+    },
+
+    _readyPlay: function(d){
+        var p = d.position;
+        var pp = this.circleMap[p];
+        this.deskMap[pp].html(p);
+    },
+
+    _cancelPlay: function(d){
+        var p = d.position;
+        var pp = this.circleMap[p];
+        this.deskMap[pp].html(p);
     },
 
     _exitGame: function(e){
