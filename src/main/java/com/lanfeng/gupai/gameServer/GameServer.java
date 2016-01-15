@@ -3,6 +3,8 @@ package com.lanfeng.gupai.gameServer;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -24,8 +26,10 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.lanfeng.gupai.cacheCenter.CacheCenter;
+import com.lanfeng.gupai.model.Card;
 import com.lanfeng.gupai.model.scence.Desk;
 import com.lanfeng.gupai.service.impl.DeskService;
+import com.lanfeng.gupai.utils.CardsCreator;
 import com.lanfeng.gupai.utils.PositionMap;
 import com.lanfeng.gupai.utils.ServiceUtil;
 import com.lanfeng.gupai.utils.common.JSONObject;
@@ -101,6 +105,10 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 			sitSeat(session, sId, uId, roomId, deskId, position);
 		} else if ("leaveSeat".equals(eventType)) {
 			leaveSeat(session, sId, uId, jsonStr);
+		} else if ("readyPlay".equals(eventType)) {
+			//to do
+		} else if ("cancelReady".equals(eventType)) {
+			//to do
 		}
 	}
 
@@ -132,7 +140,6 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		result.put("eventType", "initPlayGround");
 		result.put("data", desk);
 		sendMessage(session, result);
-		// CardsCreator.getInstance().getCards().toString());
 	}
 	
 	private Set<Session> getDeskUser(String jsonStr){
@@ -187,6 +194,25 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		result.put("eventType", "sitSeat");
 		result.put("data", data);
 		sendAllMessage(result);
+		
+		if(true || users.size() == 4){
+			distributeCards(users);
+		}
+	} 
+	
+	private void distributeCards(Set<Session> users){
+		Map<String, List<Card>> ms = CardsCreator.getInstance().distributeCards();
+		JSONObject data = new JSONObject();
+		data.put("NORTH", ms.get("NORTH"));
+		data.put("WEST", ms.get("WEST"));
+		data.put("SOUTH", ms.get("SOUTH"));
+		data.put("EAST", ms.get("EAST"));
+		
+		JSONObject result = new JSONObject();
+		result.put("eventType", "distributeCards");
+		result.put("data", data);
+		
+		sendMessage(users, result);
 	} 
 	
 	private void leaveSeat(Session session, String sId, String uId, String jsonStr){

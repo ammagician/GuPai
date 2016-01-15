@@ -22,6 +22,7 @@ GP.PlayGround.prototype = {
         ws.addMessageCallback("login", this._onMessage, this);
         ws.addMessageCallback("readyPlay", this._onMessage, this);
         ws.addMessageCallback("cancelReady", this._onMessage, this);
+        ws.addMessageCallback("distributeCards", this._onMessage, this);
 
         this._initLayout();
         this._bindEvent();
@@ -167,6 +168,9 @@ GP.PlayGround.prototype = {
             case "cancelReady" :
                 this._cancelReady(data.data);
                 break;
+            case "distributeCards" :
+                this._distributeCards(data.data);
+                break;
         }
     },
 
@@ -231,9 +235,19 @@ GP.PlayGround.prototype = {
         this.deskMap[pp].html(p);
     },
 
+    _distributeCards :function(d){
+        console.info(d);
+        var bottomCards = d[this.position];
+        this._drawCards(bottomCards);
+    },
+
     _exitGame: function(e){
         var pg = e.data.scope;
         pg.close(true);
+    },
+
+    _drawCards: function(cards){
+
     },
 
     resize: function(){
@@ -250,6 +264,7 @@ GP.PlayGround.prototype = {
         ws.removeMessageCallback("leaveSeat", this._onMessage);
         ws.removeMessageCallback("readyPlay", this._onMessage);
         ws.removeMessageCallback("cancelReady", this._onMessage);
+        ws.removeMessageCallback("distributeCards", this._onMessage);
 
         if(leaveSeat){
             this.sendLeaveSeat();
