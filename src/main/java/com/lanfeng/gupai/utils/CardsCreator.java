@@ -5,7 +5,9 @@ package com.lanfeng.gupai.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,6 +46,17 @@ public class CardsCreator implements IXmlContent<List<Card>> {
 
 	public List<Card> getCards() {
 		return coloneCards();
+	}
+	
+	public Map<String, List<Card>> distributeCards(){
+		Map<String, List<Card>> s = new HashMap<String, List<Card>>();
+		List<Card> cs = getCards();
+		s.put("NORTH", cs.subList(0, 8));
+		s.put("WEST", cs.subList(8, 16));
+		s.put("SOUTH", cs.subList(16, 24));
+		s.put("EAST", cs.subList(24, 32));
+
+		return s;
 	}
 
 	private List<Card> coloneCards() {

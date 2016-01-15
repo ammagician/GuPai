@@ -20,11 +20,13 @@ GP.PlayGround.prototype = {
         ws.addMessageCallback("sitSeat", this._onMessage, this);
         ws.addMessageCallback("leaveSeat", this._onMessage, this);
         ws.addMessageCallback("login", this._onMessage, this);
+        ws.addMessageCallback("readyPlay", this._onMessage, this);
+        ws.addMessageCallback("cancelReady", this._onMessage, this);
 
         this._initLayout();
         this._bindEvent();
-        this.sendSitSeat(false);
         this.sendInitPlayGround();
+        this.sendSitSeat(false);
     },
     _initLayout: function(){
         this.el = $(".playground").show().empty();
@@ -223,7 +225,7 @@ GP.PlayGround.prototype = {
         this.deskMap[pp].html(p);
     },
 
-    _cancelPlay: function(d){
+    _cancelReady: function(d){
         var p = d.position;
         var pp = this.circleMap[p];
         this.deskMap[pp].html(p);
@@ -246,6 +248,8 @@ GP.PlayGround.prototype = {
         ws.removeMessageCallback("initPlayGround", this._onMessage);
         ws.removeMessageCallback("sitSeat", this._onMessage);
         ws.removeMessageCallback("leaveSeat", this._onMessage);
+        ws.removeMessageCallback("readyPlay", this._onMessage);
+        ws.removeMessageCallback("cancelReady", this._onMessage);
 
         if(leaveSeat){
             this.sendLeaveSeat();
