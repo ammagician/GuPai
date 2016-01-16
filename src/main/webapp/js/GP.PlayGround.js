@@ -13,6 +13,7 @@ GP.PlayGround = function(msg){
 
 GP.PlayGround.prototype = {
     init: function(){
+        this.svg = new GP.SVG();
         this.circleMap = window.globalFn._initCircleMap(this.position);
 
         var ws = getWebSocket();
@@ -62,7 +63,9 @@ GP.PlayGround.prototype = {
                                 "<button class='fl gp-btn outCardBtn'>出</button>" +
                                 "<button class='fl gp-btn passCardBtn'>过</button>" +
                             "</div>" +
-                            "<div class='leftCards'></div>" +
+                            "<div class='leftCards'>" +
+                                //"<svg xmlns='http://www.w3.org/2000/svg' version='1.1' class='fullSize'></svg>" +
+                            "</div>" +
                             "<div class='deskInfo'>" +
                                 "<div class='fl fullHeight userInfo'></div>" +
                                 "<div class='fl fullHeight winCards'></div>" +
@@ -247,7 +250,43 @@ GP.PlayGround.prototype = {
     },
 
     _drawCards: function(cards){
+        /*
+        var svg_bottom = this.desk_bottom.find(".leftCards svg");
+        for(var i= 0, len=cards.length; i<len; i++){
+            var rect = this.svg.rect(30*i + 2, 0, 30, 50, "red", "#ccc", 1);
+            svg_bottom.append(rect);
+        }
+        */
 
+        this.cards = {};
+        var leftCards = this.desk_bottom.find(".leftCards");
+        for(var i= 0, len=cards.length; i<len; i++) {
+            var c = cards[i];
+            var card = $("<div class='desk-card iBlock tc pointer'></div>");
+            card.attr("cardId", c.id);
+            card.attr("cardType", c.type);
+            card.attr("cardValue", c.value);
+            card.text(c.name);
+            leftCards.append(card);
+            this.cards[c.id] = card;
+        }
+
+        this._bindCardEvent();
+    },
+
+    _bindCardEvent: function(){
+        var cards = this.desk_bottom.find(".leftCards");
+        cards.bind("click", {scope:this}, this._playCard);
+    },
+
+    _playCard: function(e){
+        var t = $(e.target),
+            scope = e.data.scope;
+        if(t.hasClass("desk-card-ready")){
+            t.removeClass("desk-card-ready");
+        }else{
+            t.addClass("desk-card-ready");
+        }
     },
 
     resize: function(){

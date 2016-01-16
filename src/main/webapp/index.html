@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=9"/>
     <title></title>
     <link rel="stylesheet" href="css/base.css" type="text/css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
@@ -52,6 +53,7 @@
     </div>
     <div id="playgroundDiv" class="playground pa none fullSize"></div>
 
+    <script type="text/javascript" src="js/GP.SVG.js"></script>
     <script type="text/javascript" src="js/GP.Login.js"></script>
     <script type="text/javascript" src="js/GP.Hall.js"></script>
     <script type="text/javascript" src="js/GP.Room.js"></script>
@@ -60,6 +62,16 @@
         var app = {};
         window.app = app;
         app.loginObj = new GP.Login();
+
+        $(window).bind("unload", function(){
+            if(window.getWebSocket){
+                var ws = getWebSocket();
+                if(ws){
+                    ws.close();
+                }
+            }
+        });
+
     </script>
 </body>
 </html>

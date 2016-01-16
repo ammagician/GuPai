@@ -84,6 +84,7 @@ GP.WebSocket.prototype = {
         this.messageCallbacks = null;
         if(this.webSocket){
             this.webSocket.close();
+            console.info("webSocket close");
         }
     }
 }
