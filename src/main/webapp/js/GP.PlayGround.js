@@ -13,8 +13,10 @@ GP.PlayGround = function(msg){
 
 GP.PlayGround.prototype = {
     init: function(){
-        this.svg = new GP.SVG();
+        //this.svg = new GP.SVG();
+        this.cardAnalysis = new GP.CardAnalysis();
         this.circleMap = window.globalFn._initCircleMap(this.position);
+        this.readyCardsMap = {size:0, cards: {}};
 
         var ws = getWebSocket();
         ws.addMessageCallback("initPlayGround", this._onMessage, this);
@@ -60,7 +62,7 @@ GP.PlayGround.prototype = {
                         "<div class='fullWidth tc thc desk-bottom pr'>" +
                             "<div class='playBtns bc tc'>" +
                                 "<button class='fl gp-btn readyBtn'>开始</button>" +
-                                "<button class='fl gp-btn outCardBtn'>出</button>" +
+                                "<button class='fl gp-btn playCardBtn'>出</button>" +
                                 "<button class='fl gp-btn passCardBtn'>过</button>" +
                             "</div>" +
                             "<div class='leftCards'>" +
@@ -91,6 +93,10 @@ GP.PlayGround.prototype = {
         this.desk_bottom = this.cavansEl.find(".desk-bottom");
         this.desk_left = this.cavansEl.find(".desk-left");
         this.desk_center = this.cavansEl.find(".desk-center");
+        this.readyBtn = this.cavansEl.find(".readyBtn");
+        this.playCardBtn = this.cavansEl.find(".playCardBtn");
+        this.passCardBtn = this.cavansEl.find(".passCardBtn");
+        this.exitBtn = this.el.find(".exit-icon");
 
         this.deskMap = {
             top: this.desk_top,
@@ -102,7 +108,14 @@ GP.PlayGround.prototype = {
     },
 
     _bindEvent: function(){
-        this.el.find(".exit-icon").bind("click", {scope: this}, this._exitGame);
+        this.exitBtn.bind("click", {scope: this}, this._exitGame);
+        this.readyBtn.bind("click", {scope: this}, this._readyPlayBtnClick);
+        this.playCardBtn.bind("click", {scope: this}, this._playCards);
+        this.passCardBtn.bind("click", {scope: this}, this._passCard);
+    },
+
+    _readyPlayBtnClick: function(e){
+
     },
 
     sendSitSeat: function(){
@@ -250,14 +263,6 @@ GP.PlayGround.prototype = {
     },
 
     _drawCards: function(cards){
-        /*
-        var svg_bottom = this.desk_bottom.find(".leftCards svg");
-        for(var i= 0, len=cards.length; i<len; i++){
-            var rect = this.svg.rect(30*i + 2, 0, 30, 50, "red", "#ccc", 1);
-            svg_bottom.append(rect);
-        }
-        */
-
         this.cards = {};
         var leftCards = this.desk_bottom.find(".leftCards");
         for(var i= 0, len=cards.length; i<len; i++) {
@@ -276,17 +281,44 @@ GP.PlayGround.prototype = {
 
     _bindCardEvent: function(){
         var cards = this.desk_bottom.find(".leftCards");
-        cards.bind("click", {scope:this}, this._playCard);
+        cards.bind("click", {scope:this}, this._readyCard);
     },
 
-    _playCard: function(e){
-        var t = $(e.target),
-            scope = e.data.scope;
-        if(t.hasClass("desk-card-ready")){
-            t.removeClass("desk-card-ready");
+    _readyCard: function(e){
+        var c = $(e.target),
+            ctr = e.data.scope,
+            cardId = c.attr("cardId");
+        if(c.hasClass("desk-card-ready")){
+            c.removeClass("desk-card-ready");
+            ctr.readyCardsMap.size -= 1;
+            delete ctr.readyCardsMap.cards[cardId];
         }else{
-            t.addClass("desk-card-ready");
+            c.addClass("desk-card-ready");
+            ctr.readyCardsMap.size += 1;
+            ctr.readyCardsMap.cards[cardId] = {
+                id: cardId,
+                type: c.attr("cardType"),
+                value: parseInt(c.attr("cardValue"))
+            };
         }
+    },
+
+    _playCards: function(e){
+        var btn = $(e.target),
+            ctr = e.data.scope,
+            rcm = ctr.readyCardsMap;
+        var result = ctr.cardAnalysis.cardType(rcm);
+        if(!result){
+            alert("Play Card Error!");
+            return;
+        }
+
+        console.info(result.value);
+        console.info(result.type)
+    },
+
+    _passCard: function(e){
+        alert("Pass Card!");
     },
 
     resize: function(){
