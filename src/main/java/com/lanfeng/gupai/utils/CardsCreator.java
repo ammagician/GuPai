@@ -49,14 +49,25 @@ public class CardsCreator implements IXmlContent<List<Card>> {
 	}
 	
 	public Map<String, List<Card>> distributeCards(){
-		Map<String, List<Card>> s = new HashMap<String, List<Card>>();
+		Map<String, List<Card>> m = new HashMap<String, List<Card>>();
 		List<Card> cs = getCards();
-		s.put("NORTH", cs.subList(0, 8));
-		s.put("WEST", cs.subList(8, 16));
-		s.put("SOUTH", cs.subList(16, 24));
-		s.put("EAST", cs.subList(24, 32));
+		List<Card> n = cs.subList(0, 8);
+		n = CardUtil.sortCards(n);
+		List<Card> w = cs.subList(8, 16);
+		w = CardUtil.sortCards(w);
+		List<Card> s = cs.subList(16, 24);
+		System.out.println(s);
+		s = CardUtil.sortCards(s);
+		System.out.println(s);
+		List<Card> e = cs.subList(24, 32);
+		e = CardUtil.sortCards(e);
+		
+		m.put("NORTH", n);
+		m.put("WEST", w);
+		m.put("SOUTH", s);
+		m.put("EAST", e);
 
-		return s;
+		return m;
 	}
 
 	private List<Card> coloneCards() {

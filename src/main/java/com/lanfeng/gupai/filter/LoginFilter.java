@@ -22,7 +22,6 @@ public class LoginFilter extends StrutsPrepareAndExecuteFilter {
 	public void doFilter(ServletRequest req, ServletResponse res,
 			FilterChain fc) throws IOException, ServletException {
 		// TODO Auto-generated method stub
-		System.out.println("LoginFilter");
 		HttpSession session = ((HttpServletRequest)req).getSession();
 		HttpServletResponse response = (HttpServletResponse)res;
 		String user = (String) session.getAttribute("user");
