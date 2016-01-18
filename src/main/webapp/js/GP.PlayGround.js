@@ -61,9 +61,9 @@ GP.PlayGround.prototype = {
                         "</div>" +
                         "<div class='fullWidth tc thc desk-bottom pr'>" +
                             "<div class='playBtns bc tc'>" +
-                                "<button class='fl gp-btn readyBtn'>开始</button>" +
-                                "<button class='fl gp-btn playCardBtn'>出</button>" +
-                                "<button class='fl gp-btn passCardBtn'>过</button>" +
+                                "<button class='gp-btn readyBtn' ready='0'>开始</button>" +
+                                "<button class='none gp-btn playCardBtn'>出</button>" +
+                                "<button class='none gp-btn passCardBtn'>垫</button>" +
                             "</div>" +
                             "<div class='leftCards'>" +
                                 //"<svg xmlns='http://www.w3.org/2000/svg' version='1.1' class='fullSize'></svg>" +
@@ -110,12 +110,15 @@ GP.PlayGround.prototype = {
     _bindEvent: function(){
         this.exitBtn.bind("click", {scope: this}, this._exitGame);
         this.readyBtn.bind("click", {scope: this}, this._readyPlayBtnClick);
-        this.playCardBtn.bind("click", {scope: this}, this._playCards);
-        this.passCardBtn.bind("click", {scope: this}, this._passCard);
+        this.playCardBtn.bind("click", {scope: this}, this._playCardBtnClick);
+        this.passCardBtn.bind("click", {scope: this}, this._passCardBtnClick);
     },
 
     _readyPlayBtnClick: function(e){
-
+        var t = $(e.target),
+            scope = e.data.scope,
+            ready = t.attr("ready") == "0";
+        scope.sendReadyPlay(ready);
     },
 
     sendSitSeat: function(){
@@ -141,18 +144,20 @@ GP.PlayGround.prototype = {
         this.sendMessage(msg);
     },
 
-    sendReadyPlay: function(){
+    sendReadyPlay: function(ready){
         var msg = {
-            eventType: "readyPlay",
-            data: this.msg
+            eventType: ready? "readyPlay" : "cancelReady",
+            data: {roomId: this.roomId, deskId: this.deskId}
         };
         this.sendMessage(msg);
     },
 
-    sendCancelReady: function(){
+    sendPlayCard: function(data){
+        var d = $.extend({}, this.msg);
+        d.cardsInfo = data;
         var msg = {
-            eventType: "cancelReady",
-            data: this.msg
+            eventType: "playCard",
+            data: d
         };
         this.sendMessage(msg);
     },
@@ -180,12 +185,16 @@ GP.PlayGround.prototype = {
                 this._login();
                 break;
             case "readyPlay" :
-                this._readyPlay(data.data);
+                this._readyPlay(true);
+                break;
             case "cancelReady" :
-                this._cancelReady(data.data);
+                this._readyPlay(false);
                 break;
             case "distributeCards" :
                 this._distributeCards(data.data);
+                break;
+            case "playCard" :
+                this._playCard(data.data);
                 break;
         }
     },
@@ -239,22 +248,21 @@ GP.PlayGround.prototype = {
         this.deskMap[pp].attr("userId", "").find(".userInfo").html(p);
     },
 
-    _readyPlay: function(d){
-        var p = d.position;
-        var pp = this.circleMap[p];
-        this.deskMap[pp].html(p);
-    },
-
-    _cancelReady: function(d){
-        var p = d.position;
-        var pp = this.circleMap[p];
-        this.deskMap[pp].html(p);
+    _readyPlay: function(ready){
+        if(ready){
+            this.readyBtn.attr("ready", "1").text("取消");
+        }else{
+            this.readyBtn.attr("ready", "0").text("开始");
+        }
     },
 
     _distributeCards :function(d){
-        console.info(d);
         var bottomCards = d[this.position];
         this._drawCards(bottomCards);
+
+        this.readyBtn.addClass("none");
+        this.passCardBtn.removeClass("none");
+        this.playCardBtn.removeClass("none");
     },
 
     _exitGame: function(e){
@@ -303,22 +311,46 @@ GP.PlayGround.prototype = {
         }
     },
 
-    _playCards: function(e){
+    _playCardBtnClick: function(e){
         var btn = $(e.target),
             ctr = e.data.scope,
             rcm = ctr.readyCardsMap;
         var result = ctr.cardAnalysis.cardType(rcm);
         if(!result){
-            alert("Play Card Error!");
+            new GP.UI.Tip({
+                duration: 500,
+                msg: "Play card error!"
+            });
             return;
         }
+        ctr.sendPlayCard(result);
 
         console.info(result.value);
-        console.info(result.type)
+        console.info(result.comType);
+        console.info(result.cardType);
     },
 
-    _passCard: function(e){
-        alert("Pass Card!");
+    _playCard: function(msg){
+        var position = msg.position;
+        if(position == this.position){
+            var cardIds = msg.cardsInfo.cardIds;
+            for(var i= 0,len=cardIds.length; i<len; i++){
+                var id = cardIds[i];
+                this.cards[id].remove();
+                delete this.cards[id];
+            }
+            this.readyCardsMap.size = 0;
+            this.readyCardsMap.cards = {};
+        }else{
+            
+        }
+    },
+
+    _passCardBtnClick: function(e){
+        new GP.UI.Tip({
+            duration: 500,
+            msg: "Pass Card!"
+        });
     },
 
     resize: function(){

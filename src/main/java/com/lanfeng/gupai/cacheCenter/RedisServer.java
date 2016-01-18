@@ -26,6 +26,10 @@ public class RedisServer {
 		config.setMaxWaitMillis(1000*60*30);
 		config.setTestOnBorrow(true);
 		pool = new JedisPool(config, "127.0.0.1", 6379);
+		
+		Jedis jedis = pool.getResource();
+		jedis.flushDB();
+		jedis.close();
 	}
 	
 	public Jedis getRedis (){

@@ -77,8 +77,6 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		
 		JSONObject obj = JSONObject.fromObject(message);
 		String eventType = obj.getString("eventType");
-		JSONObject result = new JSONObject();
-		result.put("eventType", eventType);
 		JSONObject data = obj.getJSONObject("data");
 		String roomId = data.getString("roomId");
 		String deskId = data.getString("deskId");
@@ -106,9 +104,12 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		} else if ("leaveSeat".equals(eventType)) {
 			leaveSeat(session, sId, uId, jsonStr);
 		} else if ("readyPlay".equals(eventType)) {
-			//to do
+			readyPlay(session, deskId, true);
 		} else if ("cancelReady".equals(eventType)) {
-			//to do
+			readyPlay(session, deskId, false);
+		} else if ("playCard".equals(eventType)) {
+			JSONObject cardsInfo = data.getJSONObject("cardsInfo");
+			playCard(session, deskId, cardsInfo);
 		}
 	}
 
@@ -130,6 +131,52 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		System.out.println("webSocket error");
 		System.out.println(t.toString());
 	}
+	
+	private void playCard(Session session, String deskId, String position, JSONObject cardsInfo){
+		JSONObject msg = new JSONObject();
+		msg.put("cardsInfo", cardsInfo);
+		msg.put("position", position);
+
+		JSONObject result = new JSONObject();
+		result.put("eventType", "playCard");
+		result.put("data", msg);
+		
+		Set<Session> users = deskUser.get(deskId);
+		sendMessage(users, result);
+	}
+	
+	private void readyPlay(Session session, String deskId, boolean ready){
+		session.getUserProperties().put("readyPlay", ready);
+		JSONObject msg = new JSONObject();
+		msg.put("readyPlay", false);
+		JSONObject result = new JSONObject();
+		result.put("eventType", "cancelReady");
+		result.put("data", msg);
+		if(!ready){
+			sendMessage(session, result);
+		}else{
+			Set<Session> users = deskUser.get(deskId);
+			distributeCards(users);
+			return;
+			/*
+			if(users.size() == 4){
+				for(Session s : users){
+					if(!(Boolean)s.getUserProperties().get("readyPlay")){
+						msg.put("readyPlay", true);
+						result.put("eventType", "readyPlay");
+						sendMessage(session, result);
+						return;
+					}
+				}
+				distributeCards(users);
+			}else{
+				msg.put("readyPlay", true);
+				result.put("eventType", "readyPlay");
+				sendMessage(session, result);
+			}
+			*/
+		}
+	}	
 	
 	private void initPlayGround(Session session, String roomId, String deskId){
 		DeskService ds = ServiceUtil.getDeskService(sc);
@@ -194,10 +241,6 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		result.put("eventType", "sitSeat");
 		result.put("data", data);
 		sendAllMessage(result);
-		
-		if(true || users.size() == 4){
-			distributeCards(users);
-		}
 	} 
 	
 	private void distributeCards(Set<Session> users){
@@ -231,6 +274,7 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		sendAllMessage(result);
 		CacheCenter.removeString(sId);
 		Set<Session> users = deskUser.get(deskId);
+		session.getUserProperties().put("readyPlay", false);
 		users.remove(session);
 		if(users.isEmpty()){
 			deskUser.remove(deskId);

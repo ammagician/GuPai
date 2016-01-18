@@ -20,15 +20,21 @@ GP.CardAnalysis.prototype = {
         };
 
         var type = m[rcm.size];
-
         if(!type){
             return false;
         }
 
         var cards = rcm.cards;
         var v = 0;
+        var ct = {
+            wen: 0,
+            wu: 0
+        };
+
+        var cardIds = [];
         for(var a in cards){
             var c = cards[a];
+            cardIds.push(c.id);
             if(v == 0){
                 v = c.value;
             }
@@ -36,10 +42,21 @@ GP.CardAnalysis.prototype = {
             if(c.value != v){
                 return false;
             }
+
+            var t = c.type;
+            if(t == "WEN"){
+                ct.wen +=1;
+            }else{
+                ct.wu +=1;
+            }
         }
 
+        var cardType = ct.wen == ct.wu? "COM" : ct.wen > ct.wu? "WEN" : "WU";
+
         return {
-            type: type,
+            cardIds: cardIds,
+            cardType: cardType,
+            comType: type,
             value: v
         };
     }
