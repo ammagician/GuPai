@@ -26,6 +26,7 @@ GP.PlayGround.prototype = {
         ws.addMessageCallback("readyPlay", this._onMessage, this);
         ws.addMessageCallback("cancelReady", this._onMessage, this);
         ws.addMessageCallback("distributeCards", this._onMessage, this);
+        ws.addMessageCallback("playCard", this._onMessage, this);
 
         this._initLayout();
         this._bindEvent();
@@ -58,6 +59,12 @@ GP.PlayGround.prototype = {
                             "<div class='leftCards'></div>" +
                         "</div>" +
                         "<div class='fullWidth tc thc desk-center'>" +
+                            "<div class='desk-center-top tc fullWidth h33p'></div>" +
+                            "<div class='desk-center-middle fullWidth h33p'>" +
+                                "<div class='desk-center-left tc fullHeight w50p'></div>" +
+                                "<div class='desk-center-right tc fullHeight w50p'></div>" +
+                            "</div>" +
+                            "<div class='desk-center-bottom fullWidth h33p tc'></div>" +
                         "</div>" +
                         "<div class='fullWidth tc thc desk-bottom pr'>" +
                             "<div class='playBtns bc tc'>" +
@@ -152,9 +159,10 @@ GP.PlayGround.prototype = {
         this.sendMessage(msg);
     },
 
-    sendPlayCard: function(data){
+    sendPlayCard: function(data, pass){
         var d = $.extend({}, this.msg);
         d.cardsInfo = data;
+        d.pass = pass;
         var msg = {
             eventType: "playCard",
             data: d
@@ -331,9 +339,11 @@ GP.PlayGround.prototype = {
     },
 
     _playCard: function(msg){
-        var position = msg.position;
+        var position = msg.position,
+            pass = msg.pass,
+            cardIds = msg.cardsInfo.cardIds,
+            p = this.circleMap[position];
         if(position == this.position){
-            var cardIds = msg.cardsInfo.cardIds;
             for(var i= 0,len=cardIds.length; i<len; i++){
                 var id = cardIds[i];
                 this.cards[id].remove();
@@ -342,15 +352,37 @@ GP.PlayGround.prototype = {
             this.readyCardsMap.size = 0;
             this.readyCardsMap.cards = {};
         }else{
-            
+            var cs = this.deskMap[p].find(".leftCards").find(".desk-card");
+            for(var i=0; i<cardIds.length; i++){
+                cs[i].remove();
+            }
+        }
+
+        var rp = ".desk-center-" + p,
+            el = this.deskMap.center.find(rp).empty();
+        el.css("line-height", el.height() + "px");
+        for(var i= 0,len=cardIds.length; i<len; i++){
+            var id = cardIds[i];
+            var card = $("<div class='desk-card m0 iBlock tc'></div>");
+            card.attr("cardId", id);
+            card.text(pass? "" : id);
+            el.append(card);
         }
     },
 
     _passCardBtnClick: function(e){
-        new GP.UI.Tip({
-            duration: 500,
-            msg: "Pass Card!"
-        });
+        var btn = $(e.target),
+            ctr = e.data.scope,
+            rcm = ctr.readyCardsMap;
+        var result = ctr.cardAnalysis.cardType(rcm);
+        if(!result){
+            new GP.UI.Tip({
+                duration: 500,
+                msg: "Play card error!"
+            });
+            return;
+        }
+        ctr.sendPlayCard(result, true);
     },
 
     resize: function(){
@@ -368,6 +400,7 @@ GP.PlayGround.prototype = {
         ws.removeMessageCallback("readyPlay", this._onMessage);
         ws.removeMessageCallback("cancelReady", this._onMessage);
         ws.removeMessageCallback("distributeCards", this._onMessage);
+        ws.removeMessageCallback("playCard", this._onMessage);
 
         if(leaveSeat){
             this.sendLeaveSeat();

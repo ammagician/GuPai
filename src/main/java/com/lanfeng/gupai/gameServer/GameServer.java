@@ -109,7 +109,8 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 			readyPlay(session, deskId, false);
 		} else if ("playCard".equals(eventType)) {
 			JSONObject cardsInfo = data.getJSONObject("cardsInfo");
-			playCard(session, deskId, cardsInfo);
+			boolean pass = data.getBoolean("pass");
+			playCard(session, deskId, position, pass, cardsInfo);
 		}
 	}
 
@@ -132,10 +133,11 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		System.out.println(t.toString());
 	}
 	
-	private void playCard(Session session, String deskId, String position, JSONObject cardsInfo){
+	private void playCard(Session session, String deskId, String position, boolean pass, JSONObject cardsInfo){
 		JSONObject msg = new JSONObject();
 		msg.put("cardsInfo", cardsInfo);
 		msg.put("position", position);
+		msg.put("pass", pass);
 
 		JSONObject result = new JSONObject();
 		result.put("eventType", "playCard");
