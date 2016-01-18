@@ -32,7 +32,9 @@ import com.lanfeng.gupai.service.impl.DeskService;
 import com.lanfeng.gupai.utils.CardsCreator;
 import com.lanfeng.gupai.utils.PositionMap;
 import com.lanfeng.gupai.utils.ServiceUtil;
+import com.lanfeng.gupai.utils.common.JSONArray;
 import com.lanfeng.gupai.utils.common.JSONObject;
+import com.lanfeng.gupai.utils.common.StringUtil;
 
 @ServerEndpoint(value = "/gameServer", configurator = GetHttpSessionConfigurator.class)
 public class GameServer extends HttpServlet implements ServletContextListener {
@@ -84,7 +86,7 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		
 		String sId = session.getId();
 		String uId = onlineUser.get(sId);
-		String jsonStr = CacheCenter.getString(sId);	
+		String jsonStr = CacheCenter.getString(sId + "-SitSeat");	
 		try{
 			httpSession.isNew();
 		}catch(Exception e){
@@ -110,7 +112,8 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		} else if ("playCard".equals(eventType)) {
 			JSONObject cardsInfo = data.getJSONObject("cardsInfo");
 			boolean pass = data.getBoolean("pass");
-			playCard(session, deskId, position, pass, cardsInfo);
+			String startPosition = data.getString("startPosition");
+			playCard(session, deskId, position, startPosition, pass, cardsInfo);
 		}
 	}
 
@@ -123,7 +126,7 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		String uId = onlineUser.get(sId);
 		onlineUser.remove(sId);
 		clients.remove(session);
-		String jsonStr = CacheCenter.getString(sId);	
+		String jsonStr = CacheCenter.getString(sId + "-SitSeat");	
 		leaveSeat(session, sId, uId, jsonStr);
 	}
 
@@ -133,7 +136,40 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		System.out.println(t.toString());
 	}
 	
-	private void playCard(Session session, String deskId, String position, boolean pass, JSONObject cardsInfo){
+	private void playCard(Session session, String deskId, String position, String startPosition, boolean pass, JSONObject cardsInfo){
+		if(!pass){
+			 String k = deskId+ "-Tour";
+			 String v = CacheCenter.getString(k);
+			 JSONObject tour = null;
+			 if(StringUtil.isValid(v)){
+				 tour = JSONObject.fromObject(v);
+			 }else{
+				 tour = new JSONObject();
+			 }
+			 tour.put("cardsInfo", cardsInfo);
+			 tour.put("position", position);
+			 
+			 CacheCenter.setString(k, tour.toString());
+			 
+			 String kk = deskId+ "-Circle";
+			 String vv = CacheCenter.getString(kk);
+			 JSONObject circle = null;
+			 JSONArray winCards = null;
+			 if(StringUtil.isValid(v)){
+				 circle = JSONObject.fromObject(vv);
+				 winCards = circle.getJSONArray(position);
+			 }else{
+				 circle = new JSONObject();
+				 winCards = new JSONArray();
+				 circle.put(position, winCards);
+				 circle.put("size", 0);
+			 }
+			 winCards.add(cardsInfo);
+			 int size = circle.getInt("size") + cardsInfo.getInt("size");
+			 circle.put("size", size);
+			 CacheCenter.setString(kk, circle.toString());
+		}
+		
 		JSONObject msg = new JSONObject();
 		msg.put("cardsInfo", cardsInfo);
 		msg.put("position", position);
@@ -145,6 +181,54 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		
 		Set<Session> users = deskUser.get(deskId);
 		sendMessage(users, result);
+		
+		String nextPosition = PositionMap.getNextPosition(position).toString();
+		if(startPosition.equals(nextPosition)){
+			tourEnd(users, deskId);
+		}
+	}
+	
+	private void tourEnd(Set<Session> users, String deskId){
+		try {
+			Thread.sleep(1500);
+			//先不考虑倒钳
+			String k = deskId+ "-Tour";
+			String v = CacheCenter.getString(k);
+			JSONObject tour = JSONObject.fromObject(v);
+			JSONObject result = new JSONObject();
+			result.put("eventType", "endTour");
+			result.put("data", tour);
+			
+			sendMessage(users, result);
+			circleEnd(users, deskId);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void circleEnd(Set<Session> users, String deskId){
+		try {
+			
+			//先不考虑倒钳
+			String k = deskId+ "-Circle";
+			String v = CacheCenter.getString(k);
+			JSONObject circle = JSONObject.fromObject(v);
+			int size = circle.getInt("size");
+			if(size == 8){
+				Thread.sleep(1500);
+				JSONObject result = new JSONObject();
+				result.put("eventType", "circleEnd");
+				result.put("data", circle);
+				
+				//to do
+				//计算分数，重新发牌
+				sendMessage(users, result);
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void readyPlay(Session session, String deskId, boolean ready){
@@ -235,7 +319,7 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		data.put("roomId", roomId);
 		data.put("deskId", deskId);
 		data.put("position", position);
-		CacheCenter.setString(sId, data.toString());
+		CacheCenter.setString(sId + "-SitSeat", data.toString());
 
 		ds.sitDesk(uId, roomId, deskId, PositionMap.getPosition(position));
 
@@ -274,7 +358,7 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		result.put("eventType", "leaveSeat");
 		result.put("data", msg);
 		sendAllMessage(result);
-		CacheCenter.removeString(sId);
+		CacheCenter.removeString(sId + "-SitSeat");
 		Set<Session> users = deskUser.get(deskId);
 		session.getUserProperties().put("readyPlay", false);
 		users.remove(session);

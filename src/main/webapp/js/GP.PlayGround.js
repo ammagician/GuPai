@@ -29,6 +29,7 @@ GP.PlayGround.prototype = {
         ws.addMessageCallback("distributeCards", this._onMessage, this);
         ws.addMessageCallback("playCard", this._onMessage, this);
         ws.addMessageCallback("tourEnd", this._onMessage, this);
+        ws.addMessageCallback("circleEnd", this._onMessage, this);
 
         this._initLayout();
         this._bindEvent();
@@ -209,6 +210,9 @@ GP.PlayGround.prototype = {
                 break;
             case "tourEnd" :
                 this._tourEnd(data.data);
+                break;
+            case "circleEnd" :
+                this._circleEnd(data.data);
                 break;
         }
     },
@@ -409,12 +413,7 @@ GP.PlayGround.prototype = {
         }
     },
 
-    _tourEnd: function(data){
-        var winPosition = data.winPosition;
-        if(winPosition == this.position){
-            this.playTurn = true;
-        }
-
+    _tourEnd: function(tour){
         //重置paiju
         this.tour = {};
         this.desk_center.find(".desk-center-top").empty();
@@ -422,8 +421,15 @@ GP.PlayGround.prototype = {
         this.desk_center.find(".desk-center-right").empty();
         this.desk_center.find(".desk-center-bottom").empty();
 
-        var cardIds = data.winCards,
-            p = this.circleMap[winPosition],
+        var position = tour.position,
+            cardsInfo = tour.cardsInfo;
+        if(position == this.position){
+            this.playTurn = true;
+            this.tour.startPosition = this.position;
+        }
+
+        var cardIds = cardsInfo.cardIds,
+            p = this.circleMap[position],
             winCards = this.deskMap[p].find(".winCards");
 
         winCards.css("line-height", winCards.height() + "px");
@@ -438,6 +444,10 @@ GP.PlayGround.prototype = {
             card.text(id);
             winCards.append(card);
         }
+    },
+
+    _circleEnd: function(circle){
+        //
     },
 
     resize: function(){
@@ -457,6 +467,7 @@ GP.PlayGround.prototype = {
         ws.removeMessageCallback("distributeCards", this._onMessage);
         ws.removeMessageCallback("playCard", this._onMessage);
         ws.removeMessageCallback("tourEnd", this._onMessage);
+        ws.removeMessageCallback("circleEnd", this._onMessage);
 
         if(leaveSeat){
             this.sendLeaveSeat();

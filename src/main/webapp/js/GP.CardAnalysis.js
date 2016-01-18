@@ -57,7 +57,8 @@ GP.CardAnalysis.prototype = {
             cardIds: cardIds,
             cardType: cardType,
             comType: type,
-            value: v
+            value: v,
+            size: cardIds.length
         };
     }
 };

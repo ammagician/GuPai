@@ -34,5 +34,21 @@ public class PositionMap {
 		}
 		return null;
 	}
+	
+	public static Position getNextPosition(String p) {
+		if("EAST".equals(p)){
+			return Position.NORTH;
+		}
+		if("NORTH".equals(p)){
+			return Position.WEST;
+		}
+		if("WEST".equals(p)){
+			return Position.SOUTH;
+		}
+		if("SOUTH".equals(p)){
+			return Position.EAST;
+		}
+		return null;
+	}
 
 }
