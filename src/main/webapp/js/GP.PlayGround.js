@@ -17,6 +17,7 @@ GP.PlayGround.prototype = {
         this.cardAnalysis = new GP.CardAnalysis();
         this.circleMap = window.globalFn._initCircleMap(this.position);
         this.readyCardsMap = {size:0, cards: {}};
+        this.tour = null;
 
         var ws = getWebSocket();
         ws.addMessageCallback("initPlayGround", this._onMessage, this);
@@ -27,6 +28,7 @@ GP.PlayGround.prototype = {
         ws.addMessageCallback("cancelReady", this._onMessage, this);
         ws.addMessageCallback("distributeCards", this._onMessage, this);
         ws.addMessageCallback("playCard", this._onMessage, this);
+        ws.addMessageCallback("tourEnd", this._onMessage, this);
 
         this._initLayout();
         this._bindEvent();
@@ -117,8 +119,8 @@ GP.PlayGround.prototype = {
     _bindEvent: function(){
         this.exitBtn.bind("click", {scope: this}, this._exitGame);
         this.readyBtn.bind("click", {scope: this}, this._readyPlayBtnClick);
-        this.playCardBtn.bind("click", {scope: this}, this._playCardBtnClick);
-        this.passCardBtn.bind("click", {scope: this}, this._passCardBtnClick);
+        this.playCardBtn.bind("click", {scope: this}, this._playCancelBtnClick);
+        this.passCardBtn.bind("click", {scope: this}, this._playCancelBtnClick);
     },
 
     _readyPlayBtnClick: function(e){
@@ -163,6 +165,7 @@ GP.PlayGround.prototype = {
         var d = $.extend({}, this.msg);
         d.cardsInfo = data;
         d.pass = pass;
+        d.startPosition = this.tour.startPosition;
         var msg = {
             eventType: "playCard",
             data: d
@@ -203,6 +206,9 @@ GP.PlayGround.prototype = {
                 break;
             case "playCard" :
                 this._playCard(data.data);
+                break;
+            case "tourEnd" :
+                this._tourEnd(data.data);
                 break;
         }
     },
@@ -271,6 +277,13 @@ GP.PlayGround.prototype = {
         this.readyBtn.addClass("none");
         this.passCardBtn.removeClass("none");
         this.playCardBtn.removeClass("none");
+
+        if(this.position == "EAST"){
+            this.playTurn = true;
+            this.tour = {
+                startPosition : this.position
+            }
+        }
     },
 
     _exitGame: function(e){
@@ -281,6 +294,7 @@ GP.PlayGround.prototype = {
     _drawCards: function(cards){
         this.cards = {};
         var leftCards = this.desk_bottom.find(".leftCards");
+        var images = window.constant.cardImages;
         for(var i= 0, len=cards.length; i<len; i++) {
             var c = cards[i];
             var card = $("<div class='desk-card iBlock tc pointer'></div>");
@@ -288,6 +302,8 @@ GP.PlayGround.prototype = {
             card.attr("cardType", c.type);
             card.attr("cardValue", c.value);
             card.text(c.name);
+            var image = images[c.id];
+            card.css("background", "url(" + image + ") 0px 0px no-repeat");
             leftCards.append(card);
             this.cards[c.id] = card;
         }
@@ -319,10 +335,14 @@ GP.PlayGround.prototype = {
         }
     },
 
-    _playCardBtnClick: function(e){
+    _playCancelBtnClick: function(e){
         var btn = $(e.target),
             ctr = e.data.scope,
             rcm = ctr.readyCardsMap;
+        if(!ctr.playTurn){
+            return;
+        }
+
         var result = ctr.cardAnalysis.cardType(rcm);
         if(!result){
             new GP.UI.Tip({
@@ -331,7 +351,8 @@ GP.PlayGround.prototype = {
             });
             return;
         }
-        ctr.sendPlayCard(result);
+        var pass = btn.hasClass(".passCardBtn");
+        ctr.sendPlayCard(result, pass);
 
         console.info(result.value);
         console.info(result.comType);
@@ -339,8 +360,10 @@ GP.PlayGround.prototype = {
     },
 
     _playCard: function(msg){
+        this.playTurn = false;
         var position = msg.position,
             pass = msg.pass,
+            startPosition = msg.startPosition,
             cardIds = msg.cardsInfo.cardIds,
             p = this.circleMap[position];
         if(position == this.position){
@@ -361,28 +384,60 @@ GP.PlayGround.prototype = {
         var rp = ".desk-center-" + p,
             el = this.deskMap.center.find(rp).empty();
         el.css("line-height", el.height() + "px");
+        var images = window.constant.cardImages;
         for(var i= 0,len=cardIds.length; i<len; i++){
             var id = cardIds[i];
             var card = $("<div class='desk-card m0 iBlock tc'></div>");
             card.attr("cardId", id);
             card.text(pass? "" : id);
+            if(!pass){
+                var image = images[id];
+                card.css("background", "url(" + image + ") 0px 0px no-repeat");
+            }
             el.append(card);
+        }
+
+        if(this.tour){
+            this.tour = {};
+        }
+
+        this.tour.startPosition = startPosition;
+
+        var pc = window.constant.positionCircle;
+        if(pc[position] == this.position && startPosition != this.position){
+            this.playTurn = true;
         }
     },
 
-    _passCardBtnClick: function(e){
-        var btn = $(e.target),
-            ctr = e.data.scope,
-            rcm = ctr.readyCardsMap;
-        var result = ctr.cardAnalysis.cardType(rcm);
-        if(!result){
-            new GP.UI.Tip({
-                duration: 500,
-                msg: "Play card error!"
-            });
-            return;
+    _tourEnd: function(data){
+        var winPosition = data.winPosition;
+        if(winPosition == this.position){
+            this.playTurn = true;
         }
-        ctr.sendPlayCard(result, true);
+
+        //重置paiju
+        this.tour = {};
+        this.desk_center.find(".desk-center-top").empty();
+        this.desk_center.find(".desk-center-left").empty();
+        this.desk_center.find(".desk-center-right").empty();
+        this.desk_center.find(".desk-center-bottom").empty();
+
+        var cardIds = data.winCards,
+            p = this.circleMap[winPosition],
+            winCards = this.deskMap[p].find(".winCards");
+
+        winCards.css("line-height", winCards.height() + "px");
+        var layCss = (p == "left" || p == "right")? "desk-card-lay" : "";
+        var images = window.constant.cardImages;
+        for(var i= 0,len=cardIds.length; i<len; i++){
+            var id = cardIds[i];
+            var image = images[id + layCss? "_L": ""];
+            var card = $("<div class='desk-card m0 iBlock tc "+ layCss +"'></div>");
+            card.css("background", "url(" + image + ") 0px 0px no-repeat");
+            card.attr("cardId", id);
+            card.text(id);
+            winCards.append(card);
+        }
     },
 
     resize: function(){
@@ -401,6 +456,7 @@ GP.PlayGround.prototype = {
         ws.removeMessageCallback("cancelReady", this._onMessage);
         ws.removeMessageCallback("distributeCards", this._onMessage);
         ws.removeMessageCallback("playCard", this._onMessage);
+        ws.removeMessageCallback("tourEnd", this._onMessage);
 
         if(leaveSeat){
             this.sendLeaveSeat();

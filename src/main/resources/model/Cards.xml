@@ -20,8 +20,8 @@
 	<card id="WENII" name="红头" type="WEN" value="10"/>
 	<card id="WENJ" name="幺六" type="WEN" value="11"/>
 	<card id="WENJJ" name="幺六" type="WEN" value="11"/>
-	<card id="WENA" name="幺五" type="WEN" value="12"/>
-	<card id="WENA" name="幺五" type="WEN" value="12"/>
+	<card id="WENK" name="幺五" type="WEN" value="12"/>
+	<card id="WENKK" name="幺五" type="WEN" value="12"/>
 	<card id="WUA" name="九" type="WU" value="1"/>
 	<card id="WUAA" name="九" type="WU" value="1"/>
 	<card id="WUB" name="八" type="WU" value="2"/>
