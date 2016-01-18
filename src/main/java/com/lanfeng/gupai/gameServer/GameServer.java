@@ -242,10 +242,7 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 			sendMessage(session, result);
 		}else{
 			Set<Session> users = deskUser.get(deskId);
-			distributeCards(users);
-			return;
-			/*
-			if(users.size() == 4){
+			if(users.size() == 2){
 				for(Session s : users){
 					if(!(Boolean)s.getUserProperties().get("readyPlay")){
 						msg.put("readyPlay", true);
@@ -260,7 +257,6 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 				result.put("eventType", "readyPlay");
 				sendMessage(session, result);
 			}
-			*/
 		}
 	}	
 	
@@ -365,6 +361,8 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		if(users.isEmpty()){
 			deskUser.remove(deskId);
 		}
+		
+		session.getUserProperties().put("readyPlay", false);
 	} 
 	
 	private void sendMessage(Set<Session> ss, JSONObject msg) {

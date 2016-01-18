@@ -277,6 +277,7 @@ GP.PlayGround.prototype = {
     _distributeCards :function(d){
         var bottomCards = d[this.position];
         this._drawCards(bottomCards);
+        this._drawCards();
 
         this.readyBtn.addClass("none");
         this.passCardBtn.removeClass("none");
@@ -296,23 +297,40 @@ GP.PlayGround.prototype = {
     },
 
     _drawCards: function(cards){
-        this.cards = {};
-        var leftCards = this.desk_bottom.find(".leftCards");
-        var images = window.constant.cardImages;
-        for(var i= 0, len=cards.length; i<len; i++) {
-            var c = cards[i];
-            var card = $("<div class='desk-card iBlock tc pointer'></div>");
-            card.attr("cardId", c.id);
-            card.attr("cardType", c.type);
-            card.attr("cardValue", c.value);
-            card.text(c.name);
-            var image = images[c.id];
-            card.css("background", "url(" + image + ") 0px 0px no-repeat");
-            leftCards.append(card);
-            this.cards[c.id] = card;
-        }
+        if(cards){
+            this.cards = {};
+            var leftCards = this.desk_bottom.find(".leftCards");
+            var images = window.constant.cardImages;
+            for(var i= 0, len=cards.length; i<len; i++) {
+                var c = cards[i];
+                var card = $("<div class='desk-card iBlock tc pointer'></div>");
+                card.attr("cardId", c.id);
+                card.attr("cardType", c.type);
+                card.attr("cardValue", c.value);
+                card.text(c.name);
+                var image = images[c.id];
+                card.css("background", "url(" + image + ") 0px 0px no-repeat #000");
+                leftCards.append(card);
+                this.cards[c.id] = card;
+            }
 
-        this._bindCardEvent();
+            this._bindCardEvent();
+        }else{
+            var top = this.desk_top.find(".leftCards");
+            var left = this.desk_left.find(".leftCards");
+            var right = this.desk_right.find(".leftCards");
+            for(var i= 0, len=8; i<len; i++) {
+                var card = "<div class='desk-card iBlock m0 tc pointer'></div>";
+                var card2 = "<div class='desk-card desk-card-lay m0 tc pointer'></div>";
+                top.append($(card));
+                left.append($(card2));
+                right.append($(card2));
+            }
+
+            var pt = left.height()/2 - 42*4;
+            left.css("padding-top", pt + "px");
+            right.css("padding-top", pt + "px");
+        }
     },
 
     _bindCardEvent: function(){
@@ -396,7 +414,7 @@ GP.PlayGround.prototype = {
             card.text(pass? "" : id);
             if(!pass){
                 var image = images[id];
-                card.css("background", "url(" + image + ") 0px 0px no-repeat");
+                card.css("background", "url(" + image + ") 0px 0px no-repeat #000");
             }
             el.append(card);
         }
@@ -439,7 +457,7 @@ GP.PlayGround.prototype = {
             var id = cardIds[i];
             var image = images[id + layCss? "_L": ""];
             var card = $("<div class='desk-card m0 iBlock tc "+ layCss +"'></div>");
-            card.css("background", "url(" + image + ") 0px 0px no-repeat");
+            card.css("background", "url(" + image + ") 0px 0px no-repeat #000");
             card.attr("cardId", id);
             card.text(id);
             winCards.append(card);

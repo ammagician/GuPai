@@ -12,7 +12,7 @@ GP.Hall.prototype = {
     resize: function(){
         clearTimeout(this.resizeHallTimeout);
         this.resizeHallTimeout = setTimeout(function(){
-            $(".hallContent").css("padding-left", calPadding() + "px");
+            $(".hallContent").css("padding-left", window.globalFn.calPadding() + "px");
         }, 100);
     },
 
