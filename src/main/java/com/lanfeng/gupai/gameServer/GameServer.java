@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -330,10 +331,11 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 	private void distributeCards(Set<Session> users){
 		Map<String, List<Card>> ms = CardsCreator.getInstance().distributeCards();
 		JSONObject data = new JSONObject();
-		data.put("NORTH", ms.get("NORTH"));
-		data.put("WEST", ms.get("WEST"));
-		data.put("SOUTH", ms.get("SOUTH"));
-		data.put("EAST", ms.get("EAST"));
+		for(Entry<String, List<Card>> entry : ms.entrySet()){
+			String k = entry.getKey();
+			List<Card> v = entry.getValue();
+			data.put(k, v);
+		}
 		
 		JSONObject result = new JSONObject();
 		result.put("eventType", "distributeCards");
