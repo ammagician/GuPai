@@ -92,7 +92,7 @@ public class CardsCreator implements IXmlContent<List<Card>> {
 	public List<Card> parse(Document doc) {
 		List<Card> cs = new ArrayList<Card>();
 		Element root = doc.getRootElement();
-		List csEl = root.selectNodes("card");
+		List<?> csEl = root.selectNodes("card");
 		for (int i = 0; i < csEl.size(); i++) {
 			Element cel = (Element) csEl.get(i);
 			String id = cel.attributeValue("id");

@@ -17,7 +17,7 @@ GP.PlayGround.prototype = {
         this.cardAnalysis = new GP.CardAnalysis();
         this.circleMap = window.globalFn._initCircleMap(this.position);
         this.readyCardsMap = {size:0, cards: {}};
-        this.tour = null;
+        this.tour = {};
 
         var ws = getWebSocket();
         ws.addMessageCallback("initPlayGround", this._onMessage, this);
@@ -384,7 +384,7 @@ GP.PlayGround.prototype = {
         }
         var pass = btn.hasClass(".passCardBtn");
         var result = ctr.cardAnalysis.cardType(rcm);
-        var cardsInfo = this.tour.cardsInfo;
+        var cardsInfo = ctr.tour.cardsInfo;
 
         if(cardsInfo){
             if(result.size == -1 || result.size != cardsInfo.size){
@@ -431,7 +431,7 @@ GP.PlayGround.prototype = {
         }else{
             var cs = this.deskMap[p].find(".leftCards").find(".desk-card");
             for(var i=0; i<cardIds.length; i++){
-                cs[i].remove();
+                $(cs[i]).remove();
             }
         }
 
