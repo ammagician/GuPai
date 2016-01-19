@@ -46,7 +46,7 @@ GP.Room.prototype = {
     resize: function(){
         clearTimeout(this.resizeRoomTimeout);
         this.resizeRoomTimeout = setTimeout(function(){
-            $(".roomContent").css("padding-left", globalFn.calPadding() + "px");
+            $(".roomContent").css("padding-left", window.globalFn.calPadding() + "px");
         }, 100);
     },
 
@@ -102,7 +102,7 @@ GP.Room.prototype = {
             }
         });
 
-        this.el.css("padding-left", calPadding() + "px");
+        this.el.css("padding-left", window.globalFn.calPadding() + "px");
 
         $(window).unbind("resize", this.resize);
         $(window).bind("resize", this.resize);

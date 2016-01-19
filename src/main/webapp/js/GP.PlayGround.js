@@ -35,17 +35,20 @@ GP.PlayGround.prototype = {
         this._bindEvent();
         this.sendInitPlayGround();
         this.sendSitSeat(false);
+
+        $(window).bind("resize", this, this.resize);
+        this._resize();
     },
     _initLayout: function(){
         this.el = $(".playground").show().empty();
         var h = this.el.height() - 30;
-        var html = "<div>" +
+        var html = "<div class='fullSize'>" +
                 "<div class='playground-toolbar fullWidth h30'>" +
                     "<div class='pointer exit-icon fr mr20'>退出</div>" +
                 "</div>" +
                 "<div id='pgc' class='pr playground-content fullWidth'>" +
                     "<div class='fl fullHeight pg-content-left'>" +
-                        "<div class='fl fullSize tc thc desk-left'>" +
+                        "<div class='fl fullWidth h75p tc thc desk-left'>" +
                             "<div class='deskInfo fl'>" +
                                 "<div class='fullHeight userInfo'></div>" +
                                 "<div class='fullHeight winCards'></div>" +
@@ -85,7 +88,7 @@ GP.PlayGround.prototype = {
                         "</div>" +
                     "</div>" +
                     "<div class='fl fullHeight pg-content-right'>" +
-                        "<div class='fr fullSize tc thc desk-right'>" +
+                        "<div class='fr fullWidth h75p  tc thc desk-right'>" +
                             "<div class='leftCards fl'></div>" +
                             "<div class='deskInfo fl'>" +
                                 "<div class='fullHeight userInfo'></div>" +
@@ -115,6 +118,21 @@ GP.PlayGround.prototype = {
             left: this.desk_left,
             center: this.desk_center
         }
+    },
+
+    _resize: function(){
+        var h = this.el.height()-30;
+        this.cavansEl.height(h);
+        var el = this.desk_top;
+        el.css("line-height", el.height() + "px");
+        el = this.desk_center;
+        el.css("line-height", el.height() + "px");
+        el = this.desk_bottom;
+        el.css("line-height", el.height() + "px");
+        el.find(".deskInfo").css("height", el.height()/2-28 + "px");
+
+        this.desk_right.css("margin-top", h/8 + "px");
+        this.desk_left.css("margin-top", h/8 + "px");
     },
 
     _bindEvent: function(){
@@ -468,14 +486,17 @@ GP.PlayGround.prototype = {
         //
     },
 
-    resize: function(){
-        clearTimeout(this.resizeRoomTimeout);
-        this.resizeRoomTimeout = setTimeout(function(){
-            console.info("resize");
+    resize: function(e){
+        var ctr = e.data;
+        clearTimeout(ctr.resizeRoomTimeout);
+        ctr.resizeRoomTimeout = setTimeout(function(){
+            ctr._resize();
         }, 100);
     },
 
     close: function(leaveSeat){
+        $(window).unbind("resize", this.resize);
+
         var ws = getWebSocket();
         ws.removeMessageCallback("initPlayGround", this._onMessage);
         ws.removeMessageCallback("sitSeat", this._onMessage);

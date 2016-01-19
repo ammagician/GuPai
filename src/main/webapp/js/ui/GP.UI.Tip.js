@@ -27,7 +27,7 @@ GP.UI.Tip.prototype = {
             left = (w - this.width) / 2;
 
 
-        var str = "<div class='pa tc tip-container'></div>";
+        var str = "<div class='pa tc tip-container none'></div>";
         var el = $(str);
         el.css({top: top + "px", left: left + "px",width: this.width + "px",
             height: this.height + "px", "line-height": this.height + "px"});
@@ -35,6 +35,7 @@ GP.UI.Tip.prototype = {
 
         this.constrain.append(el);
         this.el = el;
+        el.fadeOut();
 
         var ctr = this;
         setTimeout(function(){
