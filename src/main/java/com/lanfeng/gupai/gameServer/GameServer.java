@@ -200,7 +200,7 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 			result.put("data", tour);
 			
 			sendMessage(users, result);
-			circleEnd(users, deskId);
+			//circleEnd(users, deskId);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -242,9 +242,11 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 			sendMessage(session, result);
 		}else{
 			Set<Session> users = deskUser.get(deskId);
-			if(users.size() == 2){
+			if(users.size() == 4){
 				for(Session s : users){
-					if(!(Boolean)s.getUserProperties().get("readyPlay")){
+					Object userReady = s.getUserProperties().get("readyPlay");
+					System.out.println("user ready: " + s.getId() + " --- " + userReady);
+					if(userReady == null || !(Boolean)userReady){
 						msg.put("readyPlay", true);
 						result.put("eventType", "readyPlay");
 						sendMessage(session, result);

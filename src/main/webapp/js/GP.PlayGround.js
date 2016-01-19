@@ -67,8 +67,8 @@ GP.PlayGround.prototype = {
                         "<div class='fullWidth tc thc desk-center'>" +
                             "<div class='desk-center-top tc fullWidth h33p'></div>" +
                             "<div class='desk-center-middle fullWidth h33p'>" +
-                                "<div class='desk-center-left tc fullHeight w50p'></div>" +
-                                "<div class='desk-center-right tc fullHeight w50p'></div>" +
+                                "<div class='desk-center-left fl tc fullHeight w50p'></div>" +
+                                "<div class='desk-center-right fl tc fullHeight w50p'></div>" +
                             "</div>" +
                             "<div class='desk-center-bottom fullWidth h33p tc'></div>" +
                         "</div>" +
@@ -382,21 +382,35 @@ GP.PlayGround.prototype = {
         if(!ctr.playTurn){
             return;
         }
-
-        var result = ctr.cardAnalysis.cardType(rcm);
-        if(!result){
-            new GP.UI.Tip({
-                duration: 500,
-                msg: "Play card error!"
-            });
-            return;
-        }
         var pass = btn.hasClass(".passCardBtn");
-        ctr.sendPlayCard(result, pass);
+        var result = ctr.cardAnalysis.cardType(rcm);
+        var cardsInfo = this.tour.cardsInfo;
 
-        console.info(result.value);
-        console.info(result.comType);
-        console.info(result.cardType);
+        if(cardsInfo){
+            if(result.size == -1 || result.size != cardsInfo.size){
+                new GP.UI.Tip({
+                    duration: 500,
+                    msg: "牌型不对!"
+                });
+                return;
+            }
+
+            if(!pass){
+                if(!result.valid || result.cardType != cardsInfo.cardType || cardsInfo.value >= result.value){
+                    pass = true;
+                }
+            }
+        }else{
+            if(!result.valid){
+                new GP.UI.Tip({
+                    duration: 500,
+                    msg: "牌型不对!"
+                });
+                return;
+            }
+        }
+
+        ctr.sendPlayCard(result, pass);
     },
 
     _playCard: function(msg){
@@ -437,11 +451,14 @@ GP.PlayGround.prototype = {
             el.append(card);
         }
 
-        if(this.tour){
+        if(!this.tour){
             this.tour = {};
         }
 
         this.tour.startPosition = startPosition;
+        if(!pass){
+            this.tour.cardsInfo = msg.cardsInfo;
+        }
 
         var pc = window.constant.positionCircle;
         if(pc[position] == this.position && startPosition != this.position){
