@@ -15,7 +15,7 @@ GP.PlayGround.prototype = {
     init: function(){
         //this.svg = new GP.SVG();
         this.cardAnalysis = new GP.CardAnalysis();
-        this.circleMap = window.globalFn._initCircleMap(this.position);
+        this.circleMap = window.globalFn.initCircleMap(this.position);
         this.readyCardsMap = {size:0, cards: {}};
         this.tour = {};
 
@@ -420,7 +420,7 @@ GP.PlayGround.prototype = {
             cardIds = msg.cardsInfo.cardIds,
             p = this.circleMap[position];
         if(position == this.position){
-            for(var i= 0,len=cardIds.length; i<len; i++){
+            for(var i=0,len=cardIds.length; i<len; i++){
                 var id = cardIds[i];
                 this.cards[id].remove();
                 delete this.cards[id];
@@ -438,7 +438,7 @@ GP.PlayGround.prototype = {
             el = this.deskMap.center.find(rp).empty();
         el.css("line-height", el.height() + "px");
         var images = window.constant.cardImages;
-        for(var i= 0,len=cardIds.length; i<len; i++){
+        for(var i=0,len=cardIds.length; i<len; i++){
             var id = cardIds[i];
             var card = $("<div class='desk-card m0 iBlock tc'></div>");
             card.attr("cardId", id);
@@ -487,7 +487,7 @@ GP.PlayGround.prototype = {
         winCards.css("line-height", winCards.height() + "px");
         var layCss = (p == "left" || p == "right")? "desk-card-lay" : "";
         var images = window.constant.cardImages;
-        for(var i= 0,len=cardIds.length; i<len; i++){
+        for(var i=0,len=cardIds.length; i<len; i++){
             var id = cardIds[i];
             var image = images[id + layCss? "_L": ""];
             var card = $("<div class='desk-card m0 iBlock tc "+ layCss +"'></div>");

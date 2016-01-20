@@ -2,38 +2,39 @@
  * Created by pym on 2016/1/12.
  */
 ns("GP");
-GP.WebSocket = function(){
-    this.init();
+GP.WebSocket = function (url) {
+    url = url || constant.webSocket;
+    this.init(url);
     this.messageCallbacks = {};
 };
 
 GP.WebSocket.prototype = {
-    init: function(){
-        var webSocket = new WebSocket(constant.webSocket);
+    init: function (url) {
+        var webSocket = new WebSocket(url);
         var ws = this;
-        if(webSocket != null){
+        if (webSocket != null) {
             ws.webSocket = webSocket;
 
-            webSocket.onerror = function(event) {
+            webSocket.onerror = function (event) {
                 console.info("webSocket Error");
             };
 
-            webSocket.onopen = function(event) {
+            webSocket.onopen = function (event) {
                 console.info("webSocket Connected");
             };
 
-            webSocket.onmessage = function(event) {
+            webSocket.onmessage = function (event) {
                 ws.onWebSocketMessage(event);
             };
         }
     },
 
-    onWebSocketMessage: function(event){
+    onWebSocketMessage: function (event) {
         var data = $.parseJSON(event.data);
         var eventType = data.eventType;
 
         var cs = this.messageCallbacks[eventType] || [];
-        for(var i= 0,len=cs.length; i<len; i++){
+        for (var i = 0, len = cs.length; i < len; i++) {
             var item = cs[i],
                 fn = item.fn,
                 scope = item.scope;
@@ -41,15 +42,15 @@ GP.WebSocket.prototype = {
         }
     },
 
-    sendMessage: function(msg){
-        if(this.webSocket){
+    sendMessage: function (msg) {
+        if (this.webSocket) {
             this.webSocket.send($.toJSON(msg));
         }
     },
 
-    addMessageCallback: function(eventType, fn, scope){
+    addMessageCallback: function (eventType, fn, scope) {
         var cs = this.messageCallbacks;
-        if(!cs[eventType]){
+        if (!cs[eventType]) {
             cs[eventType] = [];
         }
 
@@ -60,31 +61,29 @@ GP.WebSocket.prototype = {
         });
     },
 
-    removeMessageCallback: function(eventType, fn){
+    removeMessageCallback: function (eventType, fn) {
         var cs = this.messageCallbacks;
-        if(!cs[eventType]){
+        if (!cs[eventType]) {
             cs[eventType] = [];
         }
 
         var fns = cs[eventType];
-        for(var i= 0,len=fns.length; i<len; i++){
-            if(fn == fns[i].fn){
+        for (var i = 0, len = fns.length; i < len; i++) {
+            if (fn == fns[i].fn) {
                 fns.splice(i, 1);
-                --i;
-                --len;
                 break;
             }
         }
-        if(fns.length == 0){
+        if (fns.length == 0) {
             delete cs[eventType];
         }
     },
 
-    close: function(){
+    close: function () {
         this.messageCallbacks = null;
-        if(this.webSocket){
+        if (this.webSocket) {
             this.webSocket.close();
             console.info("webSocket close");
         }
     }
-}
+};

@@ -26,7 +26,7 @@ var globalFn = {
         this.initWebSocket();
     },
 
-    _initCircleMap: function(position){
+    initCircleMap: function(position){
         var circle = ["NORTH", "WEST", "SOUTH", "EAST"];
         var _circle_ = ["bottom", "right", "top", "left"];
         var cIndex = 0;
@@ -44,5 +44,14 @@ var globalFn = {
             circleMap[p] = _circle_[cIndex];
         }
         return circleMap;
-    }
+    },
+
+    getID: (function(){
+        var index = 0;
+        return function(){
+            var id = "GP_ID_" + index;
+            index++;
+            return id;
+        }
+    })()
 };
