@@ -69,6 +69,14 @@ public class CacheCenter{
 		return result;
 	}
 	
+	public static <T extends Cachable> void setObjectsToSet(String key, List<T> objs){
+		Jedis redis = server.getRedis();
+		for(T t : objs){
+			redis.sadd(key.getBytes(), SerializeUtil.serialize(t)); 
+		}
+		server.returnRedis(redis);
+	}
+	
 	public static <T extends Cachable> void setObjectToSet(String key, T t){
 		Jedis redis = server.getRedis();
 		redis.sadd(key.getBytes(), SerializeUtil.serialize(t)); 
@@ -109,9 +117,7 @@ public class CacheCenter{
 	}
 	
 	public static void setRooms(String hallId, List<Room> rooms){
-		for(Room r : rooms){
-			setObjectToSet(hallId, r);
-		}
+		setObjectsToSet(hallId, rooms);
 	}
 	
 	public static List<Room> getRooms(String hallId){
@@ -149,9 +155,7 @@ public class CacheCenter{
 	}
 	
 	public static void setDesks(String roomId, List<Desk> desks){
-		for(Desk d : desks){
-			setObjectToSet(roomId, d);
-		}
+		setObjectsToSet(roomId, desks);
 	}
 
 }
