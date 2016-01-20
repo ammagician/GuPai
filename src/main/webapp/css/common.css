@@ -48,13 +48,13 @@ html, body{width:100%; height: 100%; background-color: #34383d;}
 
 .desk-bottom .playBtns{width:210px; height: 28px;line-height: 28px;}
 .desk-bottom .playBtns .gp-btn{margin: 0 10px;}
-.desk-card{background-color:#000; margin-top:20px;width:40px;height:80px;line-height: 80px;border:solid 1px #34383d; border-radius: 5px;}
+.desk-card{background-color:#000; margin-top:20px;width:50px;height:100px;line-height: 100px;border:solid 1px #34383d; border-radius: 5px;}
 .desk-card:hover{border-color:#4A86BA;opacity: 0.9;}
 .desk-card-ready{margin-top:0px;vertical-align: top;}
 .desk-center-top{padding-top:20px;}
 .desk-center-left{padding-left:20px;}
 .desk-center-right{padding-right:20px;}
 .desk-center-bottom .desk-card{vertical-align: bottom;margin-bottom:20px;width:50px;height:100px;line-height: 100px;}
-.desk-center-top .desk-card{vertical-align: top;margin-top:10px;width:40px;height:80px}
+.desk-center-top .desk-card{vertical-align: top;margin-top:10px;width:50px;height:100px}
 .desk-center-middle .desk-card{vertical-align: middle;}
-.desk-card-lay{width:80px;height:40px; margin:0px;}
+.desk-card-lay{width:100px;height:50px; margin:0px;}

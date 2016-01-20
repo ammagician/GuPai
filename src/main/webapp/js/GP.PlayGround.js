@@ -325,9 +325,8 @@ GP.PlayGround.prototype = {
                 card.attr("cardId", c.id);
                 card.attr("cardType", c.type);
                 card.attr("cardValue", c.value);
-                card.text(c.name);
                 var image = images[c.id];
-                card.css("background", "url(" + image + ") 0px 0px no-repeat #000");
+                card.css("background", "url(" + image + ") center center no-repeat #000");
                 leftCards.append(card);
                 this.cards[c.id] = card;
             }
@@ -446,7 +445,7 @@ GP.PlayGround.prototype = {
             card.text(pass? "" : id);
             if(!pass){
                 var image = images[id];
-                card.css("background", "url(" + image + ") 0px 0px no-repeat #000");
+                card.css("background", "url(" + image + ") center center no-repeat #000");
             }
             el.append(card);
         }
