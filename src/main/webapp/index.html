@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!--meta http-equiv="X-UA-Compatible" content="IE=9"/-->
     <title></title>
     <link rel="stylesheet" href="css/base.css" type="text/css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
@@ -13,14 +12,7 @@
     <script type="text/javascript" src="js/lib/jquery.json.min.js"></script>
     <script type="text/javascript" src="js/lib/jquery.mousewheel.js"></script>
     <script type="text/javascript" src="js/lib/bootstrap.min.js" ></script>
-
-    <script type="text/javascript" src="js/utils/GP.Util.Global.js"></script>
-    <script type="text/javascript" src="js/GP.WebSocket.js"></script>
-    <script type="text/javascript" src="js/Constant.js"></script>
-    <script type="text/javascript" src="js/GlobalFn.js"></script>
-    <script type="text/javascript" src="js/utils/GP.Util.ArrayList.js"></script>
-    <script type="text/javascript" src="js/utils/GP.Util.Debug.js"></script>
-    <script type="text/javascript" src="js/utils/GP.Util.Connection.js"></script>
+    <script type="text/javascript" src="js/GP.GlobalFn.js"></script>
 </head>
 <body>
     <div id="loginDiv" class="fullSize pa">
@@ -54,27 +46,43 @@
     </div>
     <div id="playgroundDiv" class="playground pa none fullSize"></div>
 
-    <script type="text/javascript" src="js/GP.SVG.js"></script>
+    <script type="text/javascript" src="js/GP.WebSocket.js"></script>
+    <script type="text/javascript" src="js/GP.Constant.js"></script>
+    <script type="text/javascript" src="js/utils/GP.Util.ArrayList.js"></script>
+    <script type="text/javascript" src="js/utils/GP.Util.Debug.js"></script>
+    <script type="text/javascript" src="js/utils/GP.Util.Connection.js"></script>
+
     <script type="text/javascript" src="js/GP.CardAnalysis.js"></script>
     <script type="text/javascript" src="js/GP.Login.js"></script>
     <script type="text/javascript" src="js/GP.Hall.js"></script>
     <script type="text/javascript" src="js/GP.Room.js"></script>
     <script type="text/javascript" src="js/GP.PlayGround.js"></script>
     <script type="text/javascript" src="js/ui/GP.UI.Tip.js"></script>
+    <script type="text/javascript" src="js/GP.SVG.js"></script>
     <script type="text/javascript">
-        var app = {};
-        window.app = app;
-        app.loginObj = new GP.Login();
+        if(window.WebSocket){
+            var app = {};
+            window.app = app;
+            app.loginObj = new GP.Login();
 
-        $(window).bind("unload", function(){
-            if(window.getWebSocket){
-                var ws = getWebSocket();
-                if(ws){
-                    ws.close();
+            $(window).bind("unload", function(){
+                if(window.getWebSocket){
+                    var ws = getWebSocket();
+                    if(ws){
+                        ws.close();
+                    }
                 }
-            }
-        });
-
+            });
+        }else{
+            var bd = $("body"),
+                w = bd.width(),
+                h = bd.height();
+            var div = $("<div id='support' class='tc'>你的浏览器版本太低，请下载最新的版本。</div>");
+            div.height(h);
+            div.width(w);
+            div.css({"line-height": h + "px", "color": "#fff"});
+            $("body").empty().append(div)
+        }
     </script>
 </body>
 </html>

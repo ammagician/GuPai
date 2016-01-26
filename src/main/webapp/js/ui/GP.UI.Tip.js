@@ -1,7 +1,7 @@
 /**
  * Created by pym on 2016/1/18.
  */
-ns("GP.UI");
+GP.globalFn.ns("GP.UI");
 
 GP.UI.Tip = function(hashData){
     hashData = hashData || {};

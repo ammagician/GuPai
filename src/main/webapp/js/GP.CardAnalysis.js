@@ -1,7 +1,7 @@
 /**
  * Created by pym on 2016/1/15.
  */
-ns("GP");
+GP.globalFn.ns("GP");
 GP.CardAnalysis = function(){
 
 };

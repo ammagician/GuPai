@@ -1,4 +1,4 @@
-ns("GP.Util");
+GP.globalFn.ns("GP.Util");
 GP.Util.ArrayList = function () {
 	this.listStore = [];	
 };

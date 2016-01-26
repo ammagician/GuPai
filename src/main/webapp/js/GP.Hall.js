@@ -1,7 +1,7 @@
 /**
  * Created by lanfeng on 2015/10/7.
  */
-ns("GP");
+GP.globalFn.ns("GP");
 
 GP.Hall = function(){
     this.el = $(".hallContent");
@@ -12,7 +12,7 @@ GP.Hall.prototype = {
     resize: function(){
         clearTimeout(this.resizeHallTimeout);
         this.resizeHallTimeout = setTimeout(function(){
-            $(".hallContent").css("padding-left", window.globalFn.calPadding() + "px");
+            $(".hallContent").css("padding-left", GP.globalFn.calPadding() + "px");
         }, 100);
     },
 

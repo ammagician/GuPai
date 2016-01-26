@@ -1,7 +1,7 @@
 /**
  * Created by lanfeng on 2015/10/7.
  */
-ns("GP");
+GP.globalFn.ns("GP");
 GP.Login = function(){
     this.isReLogin = false;
     this.init();
@@ -57,10 +57,10 @@ GP.Login.prototype = {
     afterLogin : function() {
         $("#loginDiv").hide();
         if (!this.isReLogin) {
-            window.globalFn.initWebSocket();
+            GP.globalFn.initWebSocket();
             var hall = new GP.Hall();
             window.app.hall = hall;
-            hall.el.css("padding-left", window.globalFn.calPadding() + "px");
+            hall.el.css("padding-left", GP.globalFn.calPadding() + "px");
             $(window).bind("resize", hall.resize);
 
             hall.getRoomList("8ad28d3a522fd83a01522fe9678b0000");
@@ -75,7 +75,7 @@ GP.Login.prototype = {
             });
         } else {
             this.isReLogin = false;
-            window.globalFn.restartWebSocket();
+            GP.globalFn.restartWebSocket();
 
             $(".playground").empty().hide();
             $(".toolBar").show();

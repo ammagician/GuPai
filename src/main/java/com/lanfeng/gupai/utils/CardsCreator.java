@@ -56,9 +56,7 @@ public class CardsCreator implements IXmlContent<List<Card>> {
 		List<Card> w = cs.subList(8, 16);
 		w = CardUtil.sortCards(w);
 		List<Card> s = cs.subList(16, 24);
-		System.out.println(s);
 		s = CardUtil.sortCards(s);
-		System.out.println(s);
 		List<Card> e = cs.subList(24, 32);
 		e = CardUtil.sortCards(e);
 		

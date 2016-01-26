@@ -1,7 +1,8 @@
 /**
  * Created by pym on 2016/1/12.
  */
-var constant = {
+GP.globalFn.ns("GP");
+GP.Constant = {
     webSocket: "ws://localhost:8111/GuPai/gameServer",
     positionCircle : {
         NORTH: "WEST",

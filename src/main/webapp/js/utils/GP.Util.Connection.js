@@ -1,4 +1,4 @@
-ns("GP.Util");
+GP.globalFn.ns("GP.Util");
 GP.Util.Connection = function () {
 	this.prop = {
 		dataType : 'json',

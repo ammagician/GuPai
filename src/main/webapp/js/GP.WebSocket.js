@@ -1,9 +1,9 @@
 /**
  * Created by pym on 2016/1/12.
  */
-ns("GP");
+GP.globalFn.ns("GP");
 GP.WebSocket = function (url) {
-    url = url || constant.webSocket;
+    url = url || GP.Constant.webSocket;
     this.init(url);
     this.messageCallbacks = {};
 };

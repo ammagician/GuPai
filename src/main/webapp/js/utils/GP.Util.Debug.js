@@ -1,4 +1,4 @@
-ns("GP.Util.Debug");
+GP.globalFn.ns("GP.Util.Debug");
 GP.Util.Debug.log = function(msg) {
 	if(GP.DEBUG && window.console){
 		window.console.log(msg);

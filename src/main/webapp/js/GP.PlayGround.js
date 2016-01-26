@@ -1,7 +1,7 @@
 /**
  * Created by lanfeng on 2016/1/12.
  */
-ns("GP");
+GP.globalFn.ns("GP");
 
 GP.PlayGround = function(msg){
     this.msg = msg || {};
@@ -15,7 +15,7 @@ GP.PlayGround.prototype = {
     init: function(){
         //this.svg = new GP.SVG();
         this.cardAnalysis = new GP.CardAnalysis();
-        this.circleMap = window.globalFn.initCircleMap(this.position);
+        this.circleMap = GP.globalFn.initCircleMap(this.position);
         this.readyCardsMap = {size:0, cards: {}};
         this.tour = {};
 
@@ -318,7 +318,7 @@ GP.PlayGround.prototype = {
         if(cards){
             this.cards = {};
             var leftCards = this.desk_bottom.find(".leftCards");
-            var images = window.constant.cardImages;
+            var images = GP.Constant.cardImages;
             for(var i= 0, len=cards.length; i<len; i++) {
                 var c = cards[i];
                 var card = $("<div class='desk-card iBlock tc pointer'></div>");
@@ -437,7 +437,7 @@ GP.PlayGround.prototype = {
         var rp = ".desk-center-" + p,
             el = this.deskMap.center.find(rp).empty();
         el.css("line-height", el.height() + "px");
-        var images = window.constant.cardImages;
+        var images = GP.Constant.cardImages;
         for(var i=0,len=cardIds.length; i<len; i++){
             var id = cardIds[i];
             var card = $("<div class='desk-card m0 iBlock tc'></div>");
@@ -459,7 +459,7 @@ GP.PlayGround.prototype = {
             this.tour.cardsInfo = msg.cardsInfo;
         }
 
-        var pc = window.constant.positionCircle;
+        var pc = GP.Constant.positionCircle;
         if(pc[position] == this.position && startPosition != this.position){
             this.playTurn = true;
         }
@@ -486,7 +486,7 @@ GP.PlayGround.prototype = {
 
         winCards.css("line-height", winCards.height() + "px");
         var layCss = (p == "left" || p == "right")? "desk-card-lay" : "";
-        var images = window.constant.cardImages;
+        var images = GP.Constant.cardImages;
         for(var i=0,len=cardIds.length; i<len; i++){
             var id = cardIds[i];
             var image = images[id + layCss? "_L": ""];
