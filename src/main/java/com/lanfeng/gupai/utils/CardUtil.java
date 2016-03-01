@@ -120,7 +120,6 @@ public class CardUtil {
 				 if(c2.getValue() == v){
 					 newCards.add(c2);
 					 i++;
-					 continue;
 				 }
 			 }
 			 

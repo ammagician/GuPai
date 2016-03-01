@@ -359,6 +359,9 @@ GP.PlayGround.prototype = {
         var c = $(e.target),
             ctr = e.data.scope,
             cardId = c.attr("cardId");
+        if(!cardId){
+            return;
+        }
         if(c.hasClass("desk-card-ready")){
             c.removeClass("desk-card-ready");
             ctr.readyCardsMap.size -= 1;

@@ -26,8 +26,33 @@ GP.CardAnalysis.prototype = {
                 size: -1
             };
         }
-
         var cards = rcm.cards;
+
+        if(rcm.size == 2){
+            var a,b;
+            for(var c in cards){
+                if(!a){
+                    a = cards[c];
+                }else{
+                    b = cards[c];
+                }
+            }
+
+            if(a.type == "WU" && b.type == "WU" && ( (a.value == 4 && b.value == 6)
+                || (a.value == 6 && b.value == 4))){
+                return {
+                    cardIds: [a.id, b.id],
+                    cardType: "WU",
+                    comType: type,
+                    value: 0,
+                    size: 2,
+                    valid: true,
+                    isZhiZun: true
+                };
+            }
+        }
+
+
         var v = 0;
         var ct = {
             wen: 0,
@@ -57,7 +82,7 @@ GP.CardAnalysis.prototype = {
 
         if(!valid){
             return {
-                valid: false,
+                valid: valid,
                 size: cardIds.length,
                 cardIds: cardIds
             };
@@ -71,7 +96,8 @@ GP.CardAnalysis.prototype = {
             comType: type,
             value: v,
             size: cardIds.length,
-            valid: true
+            valid: true,
+            isZhiZun: false
         };
     }
 };
