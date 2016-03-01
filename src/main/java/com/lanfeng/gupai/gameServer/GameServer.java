@@ -27,6 +27,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.lanfeng.gupai.cacheCenter.CacheCenter;
+import com.lanfeng.gupai.dictionary.Position;
 import com.lanfeng.gupai.model.Card;
 import com.lanfeng.gupai.model.scence.Desk;
 import com.lanfeng.gupai.service.impl.DeskService;
@@ -351,8 +352,10 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		JSONObject msg = JSONObject.fromObject(jsonStr);
 
 		DeskService ds = ServiceUtil.getDeskService(sc);
+		String roomId = msg.getString("roomId");
 		String deskId = msg.getString("deskId");
-		ds.leaveDesk(uId, msg.getString("roomId"), deskId, PositionMap.getPosition(msg.getString("position")));
+		Position position = PositionMap.getPosition(msg.getString("position"));
+		ds.leaveDesk(uId, roomId, deskId, position);
 
 		JSONObject result = new JSONObject();
 		result.put("eventType", "leaveSeat");
@@ -365,8 +368,6 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		if(users.isEmpty()){
 			deskUser.remove(deskId);
 		}
-		
-		session.getUserProperties().put("readyPlay", false);
 	} 
 	
 	private void sendMessage(Set<Session> ss, JSONObject msg) {

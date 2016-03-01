@@ -1,17 +1,24 @@
-GP.globalFn.ns("GP.Util.Debug");
-GP.Util.Debug.log = function(msg) {
-	if(GP.DEBUG && window.console){
-		window.console.log(msg);
-	}
-};
-GP.Util.Debug.warn = function(msg) {
-	if(GP.DEBUG && window.console){
-		window.console.warn(msg);
-	}
-};
-GP.Util.Debug.error = function(msg) {
-	if(GP.DEBUG && window.console){
-		window.console.error(msg);
-		window.console.log(msg.stack);
-	}
+GP.globalFn.ns("GP.Util");
+GP.Util.Debug = {
+    info : function(msg) {
+        if(GP.DEBUG && window.console){
+            window.console.info(msg);
+        }
+    },
+    log : function(msg) {
+        if(GP.DEBUG && window.console){
+            window.console.log(msg);
+        }
+    },
+    warn : function(msg) {
+        if(GP.DEBUG && window.console){
+            window.console.warn(msg);
+        }
+    },
+    error : function(msg) {
+        if(GP.DEBUG && window.console){
+            window.console.error(msg);
+            window.console.log(msg.stack);
+        }
+    }
 };

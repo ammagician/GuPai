@@ -7,7 +7,7 @@
 	<package name="com.lanfeng.gupai.action.login" namespace="/Login" extends="struts-gp">
 		<action name="Login*" method="do{1}" class="LoginAction" />
 	</package>
-	<package name="com.lanfeng.gupai.action.login.game" namespace="/Game" extends="struts-gp">
+	<package name="com.lanfeng.gupai.action.game" namespace="/Game" extends="struts-gp">
 		<action name="Hall*" method="do{1}" class="HallAction" />
 		<action name="Room*" method="do{1}" class="RoomAction" />
 		<action name="Desk*" method="do{1}" class="DeskAction" />
