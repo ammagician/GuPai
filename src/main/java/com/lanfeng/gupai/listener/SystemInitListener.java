@@ -19,9 +19,8 @@ public class SystemInitListener implements ServletContextListener {
 	}
 
 	public void contextInitialized(ServletContextEvent ctxEvent) {
-		System.out.println("System init");
-                addEndpoints(ctxEvent);
-        System.out.println("System init end");
+        addEndpoints(ctxEvent);
+        System.out.println("SystemInitListener end");
 	}
 	
 	/**
@@ -41,6 +40,7 @@ public class SystemInitListener implements ServletContextListener {
 			
 			serverContainer.addEndpoint(c);
 		} catch (DeploymentException e) {
+			System.out.println("addEndpoints error");
 			System.out.println(e.getMessage());
 			System.out.println(e);
 		}

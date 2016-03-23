@@ -1,13 +1,8 @@
 /**
- * Created by pym on 2016/1/15.
+ * Created by pym on 2016/3/23.
  */
-GP.globalFn.ns("GP");
-GP.CardAnalysis = function(){
-
-};
-
-GP.CardAnalysis.prototype = {
-    cardType: function(rcm){
+define(function(){
+    var analysisCardType = function(rcm){
         if(!rcm || rcm.size == 0 || rcm.size > 4){
             return false;
         }
@@ -99,5 +94,9 @@ GP.CardAnalysis.prototype = {
             valid: true,
             isZhiZun: false
         };
+    };
+
+    return {
+        analysisCardType: analysisCardType
     }
-};
+});

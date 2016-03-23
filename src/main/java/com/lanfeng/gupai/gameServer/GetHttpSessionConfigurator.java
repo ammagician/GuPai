@@ -14,7 +14,7 @@ public class GetHttpSessionConfigurator extends ServerEndpointConfig.Configurato
     		HandshakeResponse response){
         HttpSession httpSession = (HttpSession)request.getHttpSession();
         Map<String, Object> up = config.getUserProperties();
-        if(up == null){
+        if(up == null || httpSession == null){
         	System.out.println("modifyHandshake error");
         }else{
         	up.put(HttpSession.class.getName(),httpSession);

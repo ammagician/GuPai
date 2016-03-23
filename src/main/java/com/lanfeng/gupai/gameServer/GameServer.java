@@ -47,7 +47,7 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 
 	public void contextInitialized(ServletContextEvent ctxEvent) {
 		sc = ctxEvent.getServletContext();
-		System.out.println("System init end");
+		System.out.println("gameServer init end");
 	}
 
 	public void contextDestroyed(ServletContextEvent ctxEvent) {
@@ -184,7 +184,7 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		Set<Session> users = deskUser.get(deskId);
 		sendMessage(users, result);
 		
-		String nextPosition = PositionMap.getNextPosition(position).toString();
+		String nextPosition = PositionMap.getNextPosition(position).name();
 		if(startPosition.equals(nextPosition)){
 			tourEnd(users, deskId);
 		}
