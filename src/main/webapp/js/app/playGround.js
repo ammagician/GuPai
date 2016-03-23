@@ -1,8 +1,8 @@
 /**
  * Created by lanfeng on 2016/3/23.
  */
-define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/globalFn", "utils/constant"],
-    function($, login, cardAnalysis, webSocket, globalFn, constant){
+define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/globalFn", "utils/constant", "ui/tip"],
+    function($, login, cardAnalysis, webSocket, globalFn, constant, uiTip){
         var PlayGround = function(msg){
             this.msg = msg || {};
             this.roomId = msg.roomId || "";
@@ -388,7 +388,7 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
 
                 if(cardsInfo){
                     if(result.size == -1 || result.size != cardsInfo.size){
-                        new GP.UI.Tip({
+                        uiTip({
                             duration: 500,
                             msg: "牌型不对!"
                         });
@@ -402,7 +402,7 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
                     }
                 }else{
                     if(!result.valid){
-                        new GP.UI.Tip({
+                        uiTip({
                             duration: 500,
                             msg: "牌型不对!"
                         });
@@ -414,7 +414,6 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
             },
 
             _playCard: function(msg){
-                debugger
                 this.playTurn = false;
                 var position = msg.position,
                     pass = msg.pass,
