@@ -3,8 +3,17 @@
  */
 define(['jquery', 'utils/connection','utils/webSocket', "utils/globalFn"],
     function($, connFn, webSocket, globalFn){
-        (function(){
-            $("#loginDiv").hide();
+        var showLoginView = function(show){
+            var div = $("#loginDiv");
+            if(show){
+                div.show();
+            }else{
+                div.hide();
+            }
+        };
+
+        var init = function(){
+            showLoginView(false);
             var bd = $("body");
             var t = bd.height()/2 - 100;
             var l = bd.width()/2 - 200;
@@ -46,48 +55,33 @@ define(['jquery', 'utils/connection','utils/webSocket', "utils/globalFn"],
                     afterLogin();
                 }
             });
-        })();
+        };
+
+        init();
 
         var isReLogin = false;
-
         var reLogin  = function(){
             isReLogin = true;
-            $("#loginDiv").show();
+            showLoginView(true);
         };
 
         var afterLogin  = function() {
-            $("#loginDiv").hide();
+            showLoginView(false);
+            $("#hallDiv").show();
             if (!isReLogin) {
                 webSocket.restart();
                 require(["app/hall"], function(hall){
                     hall.getRoomList("8ad28d3a522fd83a01522fe9678b0000");
-
-                    $(".toolBar .navHall").bind("click", function (e) {
-                        var id = $(this).attr("hallId");
-                        if (hall.el.css("display") == "none" && id) {
-                            if(hall.currentRoom){
-                                hall.currentRoom.close();
-                            }
-
-                            hall.el.show();
-                            hall.toolBar.find(".navRoom").addClass("none");
-                        }
-                    });
                 });
             } else {
                 isReLogin = false;
                 webSocket.restart();
 
-                $(".playground").empty().hide();
-                $(".toolBar").show();
-                $(".content").show();
+                $("#playgroundDiv").hide().find("#pgc").remove();
 
-                var roomDis = $(".toolBar").find(".navRoom").css("display");
-                if (roomDis == "none") {
-                    $(".content").find(".hallContent").show();
-                } else {
-                    $(".content").find(".roomContent").show();
-                }
+                require(["app/hall"], function(hall){
+                    hall.showResList();
+                });
             }
 
             $(window).bind("unload", function(){
@@ -113,12 +107,11 @@ define(['jquery', 'utils/connection','utils/webSocket', "utils/globalFn"],
             if(loginFlag){
                 afterLogin();
             }else{
-                $("#loginDiv").show();
+                showLoginView(true);
             }
 
             return loginFlag;
         };
-
 
         return {
             reLogin: reLogin,

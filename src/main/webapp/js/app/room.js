@@ -3,13 +3,14 @@
  */
 define(["jquery", "utils/webSocket", "utils/connection", "utils/globalFn"],
     function($, websocket, connFn, globalFn){
-        var Room = function(){
-            this.el = $(".roomContent");
-            this.toolBar = $(".toolBar");
-            this.roomId = "";
+        var Room = function(roomId){
+            this.hallDiv = $("#hallDiv");
+            this.roomContent = this.hallDiv.find(".roomContent");
+            this.toolBar = $("#toolBarDiv");
+            this.roomId = roomId || "";
 
             this._initMessageCallback();
-            this.resize();
+            this.resize(0);
         };
 
         Room.prototype = {
@@ -43,17 +44,18 @@ define(["jquery", "utils/webSocket", "utils/connection", "utils/globalFn"],
                 this.setSeatStatus(deskId, p, true);
             },
 
-            resize: function(){
+            resize: function(timeout){
+                var room = this;
                 clearTimeout(this.resizeRoomTimeout);
                 this.resizeRoomTimeout = setTimeout(function(){
-                    $(".roomContent").css("padding-left", globalFn.calPadding() + "px");
-                }, 100);
+                    room.roomContent.css("padding-left", globalFn.calPadding() + "px");
+                }, timeout || 100);
             },
 
             getDeskList : function(roomId, roomName){
                 this.roomId = roomId;
                 var roomName = roomName;
-                var ctr = this;
+                var room = this;
                 var msg = {roomId: roomId};
                 var conn = connFn();
                 conn.add("url", "Game/DeskGetDeskList.do")
@@ -61,15 +63,15 @@ define(["jquery", "utils/webSocket", "utils/connection", "utils/globalFn"],
                 conn.addListener("onSuccess", {onSuccess : function (conn, res) {
                     var desks = res.data;
                     if(res.code == "-1"){
-                        ctr._login();
+                        room._login();
                     }else{
-                        ctr.toolBar.find(".navRoom").removeClass("none").attr("roomId", ctr.roomId).html(roomName);
+                        room.toolBar.find(".navRoom").removeClass("none").attr("roomId", room.roomId).html(roomName);
                         desks.sort(function(a, b){
                             var ai = parseInt(a.name.substring(5, a.name.length));
                             var bi = parseInt(b.name.substring(5, b.name.length));
                             return ai - bi;
                         });
-                        ctr.createDesks(desks);
+                        room.createDesks(desks);
                     }
                 }});
                 conn.connect();
@@ -85,7 +87,7 @@ define(["jquery", "utils/webSocket", "utils/connection", "utils/globalFn"],
                 }
 
                 var room = this;
-                var roomContent = this.el;
+                var roomContent = this.roomContent;
                 roomContent.empty().show();
                 roomContent.append($(html));
                 roomContent.unbind("click");
@@ -103,7 +105,7 @@ define(["jquery", "utils/webSocket", "utils/connection", "utils/globalFn"],
                     }
                 });
 
-                this.el.css("padding-left", globalFn.calPadding() + "px");
+                roomContent.css("padding-left", globalFn.calPadding() + "px");
 
                 $(window).unbind("resize", this.resize);
                 $(window).bind("resize", this.resize);
@@ -124,10 +126,10 @@ define(["jquery", "utils/webSocket", "utils/connection", "utils/globalFn"],
                 }
                 var str = "<div class='tc deskItem fl w100 h160 m15' deskId='" + id + "'>" +
                     "<div class='deskIcon w100 h100 pr'>" +
-                    "<div class='pa pointer seat seat-n "+status["north"].on+"' pos='NORTH' seatEmpty='" +status["north"].e+ "'></div>" +
-                    "<div class='pa pointer seat seat-e "+status["east"].on+"' pos='EAST' seatEmpty='" +status["east"].e+ "'></div>" +
-                    "<div class='pa pointer seat seat-s "+status["south"].on+"' pos='SOUTH' seatEmpty='" +status["south"].e+ "'></div>" +
-                    "<div class='pa pointer seat seat-w "+status["west"].on+"' pos='WEST' seatEmpty='" +status["west"].e+ "'></div>" +
+                        "<div class='pa pointer seat seat-n "+status["north"].on+"' pos='NORTH' seatEmpty='" +status["north"].e+ "'></div>" +
+                        "<div class='pa pointer seat seat-e "+status["east"].on+"' pos='EAST' seatEmpty='" +status["east"].e+ "'></div>" +
+                        "<div class='pa pointer seat seat-s "+status["south"].on+"' pos='SOUTH' seatEmpty='" +status["south"].e+ "'></div>" +
+                        "<div class='pa pointer seat seat-w "+status["west"].on+"' pos='WEST' seatEmpty='" +status["west"].e+ "'></div>" +
                     "</div>" +
                     "<div class='deskName w100 h30 lh150'>" + name + "</div>" +
                     //"<div class='deskMember w100 h30 lh150'>" + (available? "未满员": "满员") + "</div>" +
@@ -136,7 +138,6 @@ define(["jquery", "utils/webSocket", "utils/connection", "utils/globalFn"],
             },
 
             sitSeat: function(deskId, deskName, position, seat){
-                var ctr = this;
                 var msg = {
                     roomId: this.roomId,
                     deskId: deskId,
@@ -151,10 +152,9 @@ define(["jquery", "utils/webSocket", "utils/connection", "utils/globalFn"],
                     var flag = res.data;
                     if(res.code == "0"){
                         if(flag){
-                            $(".toolBar").hide();
-                            $(".content").hide();
+                            room.hallDiv.hide();
                             require(["app/playGround"], function(playGroundFn){
-                                ctr.desk = playGroundFn(msg);
+                                room.desk = playGroundFn(msg);
                             });
                         }else{
                             room.setSeatStatus(s, false);
@@ -165,8 +165,7 @@ define(["jquery", "utils/webSocket", "utils/connection", "utils/globalFn"],
             },
 
             setSeatStatus: function(deskId, position, empty){
-                var el = this.el;
-                var desk = el.find(".deskItem[deskId=" +deskId+ "]");
+                var desk = this.roomContent.find(".deskItem[deskId=" +deskId+ "]");
                 if(desk){
                     var seat = desk.find(".seat[pos=" + position + "]");
                     if(empty){
@@ -184,12 +183,12 @@ define(["jquery", "utils/webSocket", "utils/connection", "utils/globalFn"],
                 if(this.desk){
                     this.desk.close();
                 }
-                this.el.empty().hide();
+                this.roomContent.hide().empty();
             }
         };
 
-        return function(){
-            return new Room();
+        return function(id){
+            return new Room(id);
         }
     }
 );

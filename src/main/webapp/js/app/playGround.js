@@ -39,64 +39,59 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
                 this._resize();
             },
             _initLayout: function(){
-                this.el = $(".playground").show().empty();
+                this.el = $(".playground").show();
+                var pgc = this.el.find("#pgc").remove();
+
                 var h = this.el.height() - 30;
-                var html = "<div class='fullSize'>" +
-                    "<div class='playground-toolbar fullWidth h30'>" +
-                    "<div class='pointer exit-icon fr mr20'>退出</div>" +
-                    "</div>" +
-                    "<div id='pgc' class='pr playground-content fullWidth'>" +
-                    "<div class='fl fullHeight pg-content-left'>" +
-                    "<div class='fl fullWidth h75p tc thc desk-left'>" +
-                    "<div class='deskInfo fl'>" +
-                    "<div class='fullHeight userInfo'></div>" +
-                    "<div class='fullHeight winCards'></div>" +
-                    "</div>" +
-                    "<div class='leftCards fl'></div>" +
-                    "</div>" +
-                    "</div>" +
-                    "<div class='fl fullHeight pg-content-center'>" +
-                    "<div class='fullWidth tc thc desk-top'>" +
-                    "<div class='deskInfo'>" +
-                    "<div class='fullHeight fl userInfo'></div>" +
-                    "<div class='fullHeight fl winCards'></div>" +
-                    "</div>" +
-                    "<div class='leftCards'></div>" +
-                    "</div>" +
-                    "<div class='fullWidth tc thc desk-center'>" +
-                    "<div class='desk-center-top tc fullWidth h33p'></div>" +
-                    "<div class='desk-center-middle fullWidth h33p'>" +
-                    "<div class='desk-center-left fl tc fullHeight w50p'></div>" +
-                    "<div class='desk-center-right fl tc fullHeight w50p'></div>" +
-                    "</div>" +
-                    "<div class='desk-center-bottom fullWidth h33p tc'></div>" +
-                    "</div>" +
-                    "<div class='fullWidth tc thc desk-bottom pr'>" +
-                    "<div class='playBtns bc tc'>" +
-                    "<button class='gp-btn readyBtn' ready='0'>开始</button>" +
-                    "<button class='none gp-btn playCardBtn'>出</button>" +
-                    "<button class='none gp-btn passCardBtn'>垫</button>" +
-                    "</div>" +
-                    "<div class='leftCards'>" +
-                    "</div>" +
-                    "<div class='deskInfo'>" +
-                    "<div class='fl fullHeight userInfo'></div>" +
-                    "<div class='fl fullHeight winCards'></div>" +
-                    "</div>" +
-                    "</div>" +
-                    "</div>" +
-                    "<div class='fl fullHeight pg-content-right'>" +
-                    "<div class='fr fullWidth h75p  tc thc desk-right'>" +
-                    "<div class='leftCards fl'></div>" +
-                    "<div class='deskInfo fl'>" +
-                    "<div class='fullHeight userInfo'></div>" +
-                    "<div class='fullHeight winCards'></div>" +
-                    "</div>" +
-                    "</div>" +
-                    "</div>" +
-                    "<div class='cb'></div>" +
-                    "</div>" +
-                    "</div>";
+                var html =  "<div id='pgc' class='pr playground-content fullWidth'>" +
+                                "<div class='fl fullHeight pg-content-left'>" +
+                                    "<div class='fl fullWidth h75p tc thc desk-left'>" +
+                                        "<div class='deskInfo fl'>" +
+                                            "<div class='fullHeight userInfo'></div>" +
+                                            "<div class='fullHeight winCards'></div>" +
+                                        "</div>" +
+                                        "<div class='leftCards fl'></div>" +
+                                    "</div>" +
+                                "</div>" +
+                                "<div class='fl fullHeight pg-content-center'>" +
+                                    "<div class='fullWidth tc thc desk-top'>" +
+                                        "<div class='deskInfo'>" +
+                                            "<div class='fullHeight fl userInfo'></div>" +
+                                            "<div class='fullHeight fl winCards'></div>" +
+                                        "</div>" +
+                                        "<div class='leftCards'></div>" +
+                                    "</div>" +
+                                    "<div class='fullWidth tc thc desk-center'>" +
+                                        "<div class='desk-center-top tc fullWidth h33p'></div>" +
+                                        "<div class='desk-center-middle fullWidth h33p'>" +
+                                            "<div class='desk-center-left fl tc fullHeight w50p'></div>" +
+                                            "<div class='desk-center-right fl tc fullHeight w50p'></div>" +
+                                        "</div>" +
+                                        "<div class='desk-center-bottom fullWidth h33p tc'></div>" +
+                                    "</div>" +
+                                    "<div class='fullWidth tc desk-bottom'>" +
+                                        "<div class='playBtns bc tc'>" +
+                                            "<button class='gp-btn readyBtn' ready='0'>开始</button>" +
+                                            "<button class='none gp-btn playCardBtn'>出</button>" +
+                                            "<button class='none gp-btn passCardBtn'>垫</button>" +
+                                        "</div>" +
+                                        "<div class='leftCards'></div>" +
+                                        "<div class='deskInfo'>" +
+                                            "<div class='fl fullHeight userInfo'></div>" +
+                                            "<div class='fl fullHeight winCards'></div>" +
+                                        "</div>" +
+                                    "</div>" +
+                                "</div>" +
+                                "<div class='fl fullHeight pg-content-right'>" +
+                                    "<div class='fr fullWidth h75p  tc thc desk-right'>" +
+                                        "<div class='leftCards fl'></div>" +
+                                        "<div class='deskInfo fl'>" +
+                                            "<div class='fullHeight userInfo'></div>" +
+                                            "<div class='fullHeight winCards'></div>" +
+                                        "</div>" +
+                                    "</div>" +
+                                "</div>" +
+                            "</div>";
                 this.el.append($(html));
                 this.cavansEl = this.el.find("#pgc").height(h);
                 this.desk_top = this.cavansEl.find(".desk-top");
@@ -138,6 +133,9 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
                 this.readyBtn.bind("click", {scope: this}, this._readyPlayBtnClick);
                 this.playCardBtn.bind("click", {scope: this}, this._playCancelBtnClick);
                 this.passCardBtn.bind("click", {scope: this}, this._playCancelBtnClick);
+            },
+            unbindEvent: function(){
+                this.exitBtn.unbind("click");
             },
 
             _readyPlayBtnClick: function(e){
@@ -193,21 +191,22 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
             sendMessage: function(msg){
                 var ws = webSocket;
                 if(ws){
-                    ws.sendMessage(JSON.stringify(msg));
+                    ws.sendMessage(msg);
                 }
             },
 
             _onMessage: function(data){
-                var eventType = data.eventType;
+                var eventType = data.eventType,
+                    msg = data.data;
                 switch(eventType){
                     case "initPlayGround" :
-                        this._initPlayGround(data.data);
+                        this._initPlayGround(msg);
                         break;
                     case "sitSeat" :
-                        this._sitSeat(data.data);
+                        this._sitSeat(msg);
                         break;
                     case "leaveSeat" :
-                        this._leaveSeat(data.data);
+                        this._leaveSeat(msg);
                         break;
                     case "login" :
                         this._login();
@@ -219,16 +218,16 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
                         this._readyPlay(false);
                         break;
                     case "distributeCards" :
-                        this._distributeCards(data.data);
+                        this._distributeCards(msg);
                         break;
                     case "playCard" :
-                        this._playCard(data.data);
+                        this._playCard(msg);
                         break;
                     case "tourEnd" :
-                        this._tourEnd(data.data);
+                        this._tourEnd(msg);
                         break;
                     case "circleEnd" :
-                        this._circleEnd(data.data);
+                        this._circleEnd(msg);
                         break;
                 }
             },
@@ -299,11 +298,10 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
                 this.passCardBtn.removeClass("none");
                 this.playCardBtn.removeClass("none");
 
+                this.tour = {};
                 if(this.position == "EAST"){
                     this.playTurn = true;
-                    this.tour = {
-                        startPosition : this.position
-                    }
+                    this.tour.startPosition = this.position;
                 }
             },
 
@@ -383,7 +381,7 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
                     return;
                 }
                 var pass = btn.hasClass(".passCardBtn");
-                var result = ctr.cardAnalysis.cardType(rcm);
+                var result = ctr.cardAnalysis.analysisCardType(rcm);
                 var cardsInfo = ctr.tour.cardsInfo;
 
                 if(cardsInfo){
@@ -451,10 +449,6 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
                     el.append(card);
                 }
 
-                if(!this.tour){
-                    this.tour = {};
-                }
-
                 this.tour.startPosition = startPosition;
                 if(!pass){
                     this.tour.cardsInfo = msg.cardsInfo;
@@ -467,7 +461,7 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
             },
 
             _tourEnd: function(tour){
-                //重置paiju
+                //重置牌局
                 this.tour = {};
                 this.desk_center.find(".desk-center-top").empty();
                 this.desk_center.find(".desk-center-left").empty();
@@ -490,7 +484,7 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
                 var images = constant.cardImages;
                 for(var i=0,len=cardIds.length; i<len; i++){
                     var id = cardIds[i];
-                    var image = images[id + layCss? "_L": ""];
+                    var image = images[id + (layCss? "_L": "")];
                     var card = $("<div class='desk-card m0 iBlock tc "+ layCss +"'></div>");
                     card.css("background", "url(" + image + ") 0px 0px no-repeat #000");
                     card.attr("cardId", id);
@@ -512,6 +506,7 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
             },
 
             close: function(leaveSeat){
+                this.unbindEvent();
                 $(window).unbind("resize", this.resize);
 
                 var ws = webSocket;
@@ -529,9 +524,8 @@ define(["jquery", "app/login", "app/cardAnalysis", "utils/webSocket", "utils/glo
                     this.sendLeaveSeat();
                 }
 
-                this.el.empty().hide();
-                $(".toolBar").show();
-                $(".content").show();
+                this.el.hide().find("#pgc").remove();
+                $("#hallDiv").show();
             }
         };
 

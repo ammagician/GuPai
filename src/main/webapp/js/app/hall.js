@@ -3,19 +3,50 @@
  */
 define(['jquery', 'utils/connection',"utils/globalFn"],
     function($, connFn, globalFn){
-        var el = $(".hallContent");
-        var toolBar = $(".toolBar");
+        var hallEl = $("#hallDiv").show();
+        var hallContent = hallEl.find(".hallContent");
+        var toolBar = $("#toolBarDiv");
+        var mainDiv = $("#mainDiv");
         var room = null;
 
+        var init = function(){
+            toolBar.find(".navHall").bind("click", function (e) {
+                var id = $(this).attr("hallId");
+                if (hallContent.css("display") == "none" && id) {
+                    if(room){
+                        room.close();
+                    }
+
+                    hallContent.show();
+                    toolBar.find(".navRoom").addClass("none");
+                }
+            });
+
+            hallContent.css("padding-left", globalFn.calPadding() + "px");
+        };
+        init();
+
+        var showResList = function(){
+            toolBar.show();
+            mainDiv.show();
+
+            var roomDis = toolBar.find(".navRoom").css("display");
+            if (roomDis == "none") {
+                mainDiv.find(".hallContent").show();
+            } else {
+                mainDiv.find(".roomContent").show();
+            }
+        };
+
         var createRoom = function(id, name){
-            el.hide();
+            hallContent.hide();
             if(room){
                 room.close();
                 room = null;
             }
 
             require(["app/room"], function(roomFn){
-                room = roomFn();
+                room = roomFn(id);
                 room.getDeskList(id);
             });
 
@@ -37,24 +68,19 @@ define(['jquery', 'utils/connection',"utils/globalFn"],
                 html += str;
             }
 
-            var hallContent = el;
             hallContent.empty();
             hallContent.append($(html));
             hallContent.bind("click", function(e){
                 var target = $(e.target);
                 if(target.hasClass("roomIcon")){
-                    var id = target.parent().attr("roomId");
-                    var name = target.parent().find(".roomName").html();
+                    var p = target.parent();
+                    var id = p.attr("roomId");
+                    var name = p.find(".roomName").html();
+
+                    toolBar.find(".navRoom").text(name);
                     createRoom(id, name);
                 }
             });
-        };
-
-        var resize = function(){
-            clearTimeout(this.resizeHallTimeout);
-            this.resizeHallTimeout = setTimeout(function(){
-                $(".hallContent").css("padding-left", globalFn.calPadding() + "px");
-            }, 100);
         };
 
         var getRoomList  = function(hallId){
@@ -78,11 +104,18 @@ define(['jquery', 'utils/connection',"utils/globalFn"],
             conn.dispose();
         };
 
-        el.css("padding-left", globalFn.calPadding() + "px");
+        var resize = function(){
+            clearTimeout(this.resizeHallTimeout);
+            this.resizeHallTimeout = setTimeout(function(){
+                hallContent.css("padding-left", globalFn.calPadding() + "px");
+            }, 100);
+        };
         $(window).bind("resize", resize);
 
         return {
+            showResList: showResList,
             getRoomList: getRoomList,
+            toolBar: toolBar,
             currentRoom: room
         }
     }

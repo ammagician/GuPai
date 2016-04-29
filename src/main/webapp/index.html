@@ -9,7 +9,7 @@
     <script data-main="js/gp" src="js/require.js"></script>
 </head>
 <body>
-    <div id="loginDiv" class="fullSize pa">
+    <div id="loginDiv" class="fullSize pa none">
         <div id="loginContent" class="w400 h200 tc pa">
             <div class="h200 pr loginContent">
                 <div class="h35 tl mt50 ml50">
@@ -26,18 +26,25 @@
         </div>
     </div>
 
-    <div id="toolBarDiv" class="fullWidth h50 pf toolBar">
-        <ol class="fl ml20">
-            <li class="navHall fl pointer navActive">Hall</li>
-            <li class="navRoom fl ml5 pointer none">房间001</li>
-            <li class="navDesk fl ml5 none">桌子001</li>
-        </ol>
-        <div class="pointer fr mr20 w40">退出</div>
+    <div id="hallDiv" class="resList pa none fullSize">
+        <div id="toolBarDiv" class="fullWidth h50 pf toolBar">
+            <ol class="fl ml20">
+                <li class="navHall fl pointer navActive">Hall</li>
+                <li class="navRoom fl ml5 pointer none">房间001</li>
+                <li class="navDesk fl ml5 none">桌子001</li>
+            </ol>
+            <div class="pointer fr mr20 w40">退出</div>
+        </div>
+        <div id="mainDiv" class="content pr top50">
+            <div class="pr hallContent" style="top:30px;"></div>
+            <div class="pr none roomContent" style="top:30px;"></div>
+        </div>
     </div>
-    <div id="mainDiv" class="content pr top50">
-        <div class="pr hallContent" style="top:30px;"></div>
-        <div class="pr none roomContent" style="top:30px;"></div>
+
+    <div id="playgroundDiv" class="playground pa none fullSize">
+        <div class='playground-toolbar fullWidth h30'>
+            <div class='pointer exit-icon fr mr20'>退出</div>
+        </div>
     </div>
-    <div id="playgroundDiv" class="playground pa none fullSize"></div>
 </body>
 </html>

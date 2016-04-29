@@ -175,6 +175,7 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 		JSONObject msg = new JSONObject();
 		msg.put("cardsInfo", cardsInfo);
 		msg.put("position", position);
+		msg.put("startPosition", startPosition);
 		msg.put("pass", pass);
 
 		JSONObject result = new JSONObject();
@@ -198,7 +199,7 @@ public class GameServer extends HttpServlet implements ServletContextListener {
 			String v = CacheCenter.getString(k);
 			JSONObject tour = JSONObject.fromObject(v);
 			JSONObject result = new JSONObject();
-			result.put("eventType", "endTour");
+			result.put("eventType", "tourEnd");
 			result.put("data", tour);
 			
 			sendMessage(users, result);
